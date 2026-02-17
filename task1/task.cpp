@@ -1,13 +1,20 @@
 // 9 номер
 #include <iostream>
 
+int getNumber()
+{
+    return 1 + rand() % 20;
+}
+
 int main()
 {
     int row;
     int col;
 
+    std::cout << "Размеры матрицы:" << std::endl;
     std::cin >> row;
     std::cin >> col;
+    std::cout << std::endl;
 
     int **numbers = new int *[row];
     for (int i = 0; i < row; i++)
@@ -19,10 +26,11 @@ int main()
     {
         for (int j = 0; j < col; j++)
         {
-            *(*(numbers + i) + j) = 1 + rand() % 20;
+            *(*(numbers + i) + j) = getNumber();
         }
     }
 
+    std::cout << "Матрица:" << std::endl;
     for (int i = 0; i < row; i++)
     {
         for (int j = 0; j < col; j++)
@@ -31,6 +39,7 @@ int main()
         }
         std::cout << std::endl;
     }
+    std::cout << std::endl;
 
     int *sums = new int[col];
     for (int i = 0; i < col; i++)
@@ -46,10 +55,12 @@ int main()
         }
     }
 
+    std::cout << "Вектор:" << std::endl;
     for (int i = 0; i < col; i++)
     {
         std::cout << *(sums + i) << " ";
     }
+    std::cout << std::endl;
 
     delete[] sums;
 
