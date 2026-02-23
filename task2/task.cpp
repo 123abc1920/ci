@@ -188,60 +188,39 @@ public:
     }
 };
 
+void getBooks(Reader r, Library lib)
+{
+    int *booksIndexes = new int[r.neededBooksCount];
+    for (int i = 0; i < r.neededBooksCount; i++)
+    {
+        if (lib.bookIsAvailable(r.neededBooks[i]))
+        {
+            r.availableBooksCount++;
+            booksIndexes[i] = r.neededBooks[i];
+        }
+    }
+
+    r.books = new Book[r.availableBooksCount];
+    for (int i = 0; i < r.availableBooksCount; i++)
+    {
+        r.books[i] = lib.books[booksIndexes[i]];
+        lib.books[booksIndexes[i]].isInLib = false;
+    }
+    delete[] booksIndexes;
+}
+
 int main()
 {
     Library lib;
 
     NormalReader normal1(1);
-    for (int i = 0; i < normal1.neededBooksCount; i++)
-    {
-        if (lib.bookIsAvailable(i))
-        {
-            normal1.availableBooksCount++;
-        }
-    }
-    normal1.books = new Book[normal1.availableBooksCount];
-    for (int i = 0; i < normal1.neededBooksCount; i++)
-    {
-        if (lib.bookIsAvailable(i))
-        {
-            normal1.books[i] = lib.books[i];
-        }
-    }
+    getBooks(normal1, lib);
 
     GreadyReader gready1(2);
-    for (int i = 0; i < gready1.neededBooksCount; i++)
-    {
-        if (lib.bookIsAvailable(i))
-        {
-            gready1.availableBooksCount++;
-        }
-    }
-    gready1.books = new Book[gready1.availableBooksCount];
-    for (int i = 0; i < gready1.neededBooksCount; i++)
-    {
-        if (lib.bookIsAvailable(i))
-        {
-            gready1.books[i] = lib.books[i];
-        }
-    }
+    getBooks(gready1, lib);
 
     CarelessReader careless1(3);
-    for (int i = 0; i < careless1.neededBooksCount; i++)
-    {
-        if (lib.bookIsAvailable(i))
-        {
-            careless1.availableBooksCount++;
-        }
-    }
-    careless1.books = new Book[careless1.availableBooksCount];
-    for (int i = 0; i < careless1.neededBooksCount; i++)
-    {
-        if (lib.bookIsAvailable(i))
-        {
-            careless1.books[i] = lib.books[i];
-        }
-    }
+    getBooks(careless1, lib);
 
     return 0;
 }
