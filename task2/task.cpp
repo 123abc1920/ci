@@ -86,9 +86,9 @@ public:
     {
         id = _id;
 
-        int bookCount = 1 + rand() % 5;
-        neededBooks = new int[bookCount];
-        for (int i = 0; i < bookCount; i++)
+        neededBooksCount = 1 + rand() % 5;
+        neededBooks = new int[neededBooksCount];
+        for (int i = 0; i < neededBooksCount; i++)
         {
             neededBooks[i] = 1 + rand() % 30;
         }
@@ -102,9 +102,9 @@ public:
     {
         id = _id;
 
-        int bookCount = 1 + rand() % 5;
-        neededBooks = new int[bookCount];
-        for (int i = 0; i < bookCount; i++)
+        neededBooksCount = 1 + rand() % 5;
+        neededBooks = new int[neededBooksCount];
+        for (int i = 0; i < neededBooksCount; i++)
         {
             neededBooks[i] = 1 + rand() % 30;
         }
@@ -118,9 +118,9 @@ public:
     {
         id = _id;
 
-        int bookCount = 5 + rand() % 10;
-        neededBooks = new int[bookCount];
-        for (int i = 0; i < bookCount; i++)
+        neededBooksCount = 5 + rand() % 10;
+        neededBooks = new int[neededBooksCount];
+        for (int i = 0; i < neededBooksCount; i++)
         {
             neededBooks[i] = 1 + rand() % 30;
         }
@@ -170,6 +170,11 @@ public:
         return count;
     }
 
+    void release()
+    {
+        delete[] this->books;
+    }
+
     void printStatisctic()
     {
         std::cout << "Statistics:" << std::endl
@@ -188,15 +193,17 @@ public:
     }
 };
 
-void getBooks(Reader r, Library lib)
+void getBooks(Reader &r, Library &lib)
 {
     int *booksIndexes = new int[r.neededBooksCount];
+    int j = 0;
     for (int i = 0; i < r.neededBooksCount; i++)
     {
         if (lib.bookIsAvailable(r.neededBooks[i]))
         {
             r.availableBooksCount++;
-            booksIndexes[i] = r.neededBooks[i];
+            booksIndexes[j] = i;
+            j++;
         }
     }
 
@@ -212,15 +219,27 @@ void getBooks(Reader r, Library lib)
 int main()
 {
     Library lib;
+    Reader *readers = new Reader[3];
 
     NormalReader normal1(1);
     getBooks(normal1, lib);
+    readers[0] = normal1;
 
     GreadyReader gready1(2);
     getBooks(gready1, lib);
+    readers[1] = gready1;
 
     CarelessReader careless1(3);
     getBooks(careless1, lib);
+    readers[2] = careless1;
 
+    lib.release();
+    for (int i = 0; i < 3; i++)
+    {
+        readers[i].releaseReader();
+    }
+    delete[] readers;
+
+    std::cout << "Success";
     return 0;
 }
