@@ -132,22 +132,26 @@ class Library : Printable
 public:
     Book *books;
     int bookCount;
+    Reader **readers;
+    int readerCount;
 
     Library()
     {
         bookCount = 40 + rand() % 80;
         books = new Book[bookCount];
+        readerCount = 3;
+        readers = new Reader *[readerCount];
+
+        for (int i = 0; i < readerCount; i++)
+        {
+            readers[i] = nullptr;
+        }
 
         for (int i = 0; i < bookCount; i++)
         {
             Book book(i);
             *(books + i) = book;
         }
-    }
-
-    void releaseBooks()
-    {
-        delete[] books;
     }
 
     bool bookIsAvailable(int ind)
@@ -173,6 +177,16 @@ public:
     void release()
     {
         delete[] this->books;
+
+        for (int i = 0; i < readerCount; i++)
+        {
+            if (readers[i] != nullptr)
+            {
+                readers[i]->releaseReader();
+                delete readers[i];
+            }
+        }
+        delete[] readers;
     }
 
     void printStatisctic()
@@ -219,26 +233,17 @@ void getBooks(Reader &r, Library &lib)
 int main()
 {
     Library lib;
-    Reader *readers = new Reader[3];
 
-    NormalReader normal1(1);
-    getBooks(normal1, lib);
-    readers[0] = normal1;
+    lib.readers[0] = new NormalReader(1);
+    getBooks(*lib.readers[0], lib);
 
-    GreadyReader gready1(2);
-    getBooks(gready1, lib);
-    readers[1] = gready1;
+    lib.readers[1] = new GreadyReader(2);
+    getBooks(*lib.readers[1], lib);
 
-    CarelessReader careless1(3);
-    getBooks(careless1, lib);
-    readers[2] = careless1;
+    lib.readers[2] = new CarelessReader(3);
+    getBooks(*lib.readers[2], lib);
 
     lib.release();
-    for (int i = 0; i < 3; i++)
-    {
-        readers[i].releaseReader();
-    }
-    delete[] readers;
 
     std::cout << "Success";
     return 0;
