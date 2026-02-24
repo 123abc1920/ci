@@ -1,5 +1,7 @@
 // 9 номер
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 class Printable
 {
@@ -15,25 +17,31 @@ public:
     int id;
     int time;
     bool isInLib;
+    int timeUntilEnd;
+    int readerId;
 
     Book()
     {
         id = 0;
         time = 3 + rand() % 30;
+        timeUntilEnd = time;
         isInLib = true;
+        readerId = -1;
     }
 
     Book(int _id)
     {
         id = _id;
         time = 3 + rand() % 30;
+        timeUntilEnd = time;
         isInLib = true;
+        readerId = -1;
     }
 
     void print() override
     {
-        std::cout << "ID: " << id << std::endl
-                  << "Read time: " << time << std::endl;
+        std::cout << "  ID: " << id << std::endl
+                  << "  Time until end: " << timeUntilEnd << std::endl;
     }
 };
 
@@ -41,7 +49,7 @@ class Reader : Printable
 {
 public:
     int id;
-    Book *books;
+    Book **books = nullptr;
     int *neededBooks;
     int neededBooksCount;
     int availableBooksCount = 0;
@@ -64,16 +72,34 @@ public:
     void releaseReader()
     {
         delete[] neededBooks;
+        for (int i = 0; i < availableBooksCount; i++)
+        {
+            delete books[i];
+        }
         delete[] books;
+    }
+
+    void day()
+    {
+        for (int i = 0; i < availableBooksCount; i++)
+        {
+            if (books[i]->isInLib == this->id)
+            {
+                books[i]->timeUntilEnd--;
+            }
+        }
     }
 
     void print() override
     {
-        std::cout << "Reader ID: " << id << std::endl;
-        std::cout << "Books: " << std::endl;
+        std::cout << " Reader ID: " << id << std::endl;
+        std::cout << " Books: " << std::endl;
         for (int i = 0; i < availableBooksCount; i++)
         {
-            books[i].print();
+            if (books[i]->readerId == this->id)
+            {
+                books[i]->print();
+            }
         }
         std::cout << std::endl;
     }
@@ -197,15 +223,20 @@ public:
 
     void print() override
     {
-        std::cout << "Books:" << std::endl;
-
-        for (int i = 0; i < bookCount; i++)
+        for (int i = 0; i < readerCount; i++)
         {
-            books[i].print();
-            std::cout << std::endl;
+            readers[i]->day();
+            readers[i]->print();
         }
     }
 };
+
+void returnBook(Reader &r, Book &b)
+{
+    b.isInLib = true;
+    b.readerId = -1;
+    b.timeUntilEnd = b.time;
+}
 
 void getBooks(Reader &r, Library &lib)
 {
@@ -221,17 +252,20 @@ void getBooks(Reader &r, Library &lib)
         }
     }
 
-    r.books = new Book[r.availableBooksCount];
+    r.books = new Book *[r.availableBooksCount];
     for (int i = 0; i < r.availableBooksCount; i++)
     {
-        r.books[i] = lib.books[booksIndexes[i]];
+        r.books[i] = &lib.books[booksIndexes[i]];
         lib.books[booksIndexes[i]].isInLib = false;
+        lib.books[booksIndexes[i]].readerId = r.id;
     }
     delete[] booksIndexes;
 }
 
 int main()
 {
+    int lifetime = 50;
+
     Library lib;
 
     lib.readers[0] = new NormalReader(1);
@@ -243,8 +277,13 @@ int main()
     lib.readers[2] = new CarelessReader(3);
     getBooks(*lib.readers[2], lib);
 
-    lib.release();
+    for (int i = 0; i < lifetime; i++)
+    {
+        std::cout << "Day " << i << ":" << std::endl;
+        lib.print();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 
-    std::cout << "Success";
+    lib.release();
     return 0;
 }
