@@ -3,6 +3,14 @@
 #include <thread>
 #include <chrono>
 
+class Dayable
+{
+public:
+    Dayable() {};
+
+    virtual void day() {};
+};
+
 class Printable
 {
 public:
@@ -29,6 +37,13 @@ public:
         readerId = -1;
     }
 
+    void returnBook()
+    {
+        timeUntilEnd = time;
+        isInLib = true;
+        readerId = -1;
+    }
+
     Book(int _id)
     {
         id = _id;
@@ -45,7 +60,7 @@ public:
     }
 };
 
-class Reader : Printable
+class Reader : Printable, Dayable
 {
 public:
     int id;
@@ -79,17 +94,6 @@ public:
         delete[] books;
     }
 
-    void day()
-    {
-        for (int i = 0; i < availableBooksCount; i++)
-        {
-            if (books[i]->isInLib == this->id)
-            {
-                books[i]->timeUntilEnd--;
-            }
-        }
-    }
-
     void print() override
     {
         std::cout << " Reader ID: " << id << std::endl;
@@ -102,6 +106,22 @@ public:
             }
         }
         std::cout << std::endl;
+    }
+
+    void day() override
+    {
+        for (int i = 0; i < availableBooksCount; i++)
+        {
+            if (books[i]->timeUntilEnd <= 0)
+            {
+                books[i]->returnBook();
+            }
+            if (books[i]->readerId == this->id)
+            {
+                books[i]->timeUntilEnd--;
+            }
+        }
+        this->print();
     }
 };
 
@@ -135,6 +155,26 @@ public:
             neededBooks[i] = 1 + rand() % 30;
         }
     }
+
+    void day() override
+    {
+        for (int i = 0; i < availableBooksCount; i++)
+        {
+            if (books[i]->timeUntilEnd <= 0)
+            {
+                int returnOrNot = 0 + rand() % 10;
+                if (returnOrNot < 2)
+                {
+                    books[i]->returnBook();
+                }
+            }
+            if (books[i]->readerId == this->id)
+            {
+                books[i]->timeUntilEnd--;
+            }
+        }
+        this->print();
+    }
 };
 
 class GreadyReader : public Reader
@@ -153,7 +193,7 @@ public:
     }
 };
 
-class Library : Printable
+class Library : Printable, Dayable
 {
 public:
     Book *books;
@@ -215,27 +255,25 @@ public:
         delete[] readers;
     }
 
-    void printStatisctic()
+    void print() override
     {
-        std::cout << "Statistics:" << std::endl
-                  << inBookCount() << "/" << bookCount << " books in library";
+        std::cout << " In library now: " << inBookCount() << "/" << bookCount << std::endl;
     }
 
-    void print() override
+    void day() override
     {
         for (int i = 0; i < readerCount; i++)
         {
             readers[i]->day();
-            readers[i]->print();
         }
+        this->print();
     }
 };
 
-void returnBook(Reader &r, Book &b)
+void getBook(int readerId, Book &book)
 {
-    b.isInLib = true;
-    b.readerId = -1;
-    b.timeUntilEnd = b.time;
+    book.readerId = readerId;
+    book.isInLib = false;
 }
 
 void getBooks(Reader &r, Library &lib)
@@ -280,7 +318,7 @@ int main()
     for (int i = 0; i < lifetime; i++)
     {
         std::cout << "Day " << i << ":" << std::endl;
-        lib.print();
+        lib.day();
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
