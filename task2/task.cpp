@@ -68,6 +68,8 @@ public:
     int *neededBooks;
     int neededBooksCount;
     int availableBooksCount = 0;
+    int lostProbe = 100;
+    int lostProbeMini = 3;
 
     Reader() {}
 
@@ -112,13 +114,25 @@ public:
     {
         for (int i = 0; i < availableBooksCount; i++)
         {
-            if (books[i]->timeUntilEnd <= 0)
+            int loseBook = 0 + rand() % lostProbe;
+            if (books[i]->isInLib == false && books[i]->readerId == this->id)
             {
-                books[i]->returnBook();
-            }
-            if (books[i]->readerId == this->id)
-            {
-                books[i]->timeUntilEnd--;
+                if (loseBook < lostProbeMini)
+                {
+                    books[i]->isInLib = false;
+                    books[i]->readerId = -1;
+                }
+                else
+                {
+                    if (books[i]->readerId == this->id)
+                    {
+                        books[i]->timeUntilEnd--;
+                    }
+                    if (books[i]->timeUntilEnd <= 0)
+                    {
+                        books[i]->returnBook();
+                    }
+                }
             }
         }
         this->print();
@@ -160,17 +174,29 @@ public:
     {
         for (int i = 0; i < availableBooksCount; i++)
         {
-            if (books[i]->timeUntilEnd <= 0)
+            int loseBook = 0 + rand() % lostProbe;
+            if (books[i]->isInLib == false && books[i]->readerId == this->id)
             {
-                int returnOrNot = 0 + rand() % 10;
-                if (returnOrNot < 2)
+                if (loseBook < lostProbeMini)
                 {
-                    books[i]->returnBook();
+                    books[i]->isInLib = false;
+                    books[i]->readerId = -1;
                 }
-            }
-            if (books[i]->readerId == this->id)
-            {
-                books[i]->timeUntilEnd--;
+                else
+                {
+                    if (books[i]->timeUntilEnd <= 0)
+                    {
+                        int returnOrNot = 0 + rand() % 10;
+                        if (returnOrNot < 2)
+                        {
+                            books[i]->returnBook();
+                        }
+                    }
+                    if (books[i]->readerId == this->id)
+                    {
+                        books[i]->timeUntilEnd--;
+                    }
+                }
             }
         }
         this->print();
@@ -240,6 +266,21 @@ public:
         return count;
     }
 
+    int lostBookCount()
+    {
+        int count = 0;
+
+        for (int i = 0; i < bookCount; i++)
+        {
+            if (!books[i].isInLib && books[i].readerId == -1)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     void release()
     {
         delete[] this->books;
@@ -257,7 +298,9 @@ public:
 
     void print() override
     {
-        std::cout << " In library now: " << inBookCount() << "/" << bookCount << std::endl;
+        std::cout << " In library now: " << inBookCount() << "/" << bookCount << std::endl
+                  << " Lost: " << lostBookCount() << std::endl;
+        std::cout << std::endl;
     }
 
     void day() override
