@@ -68,8 +68,9 @@ public:
     int *neededBooks;
     int neededBooksCount;
     int availableBooksCount = 0;
-    int lostProbe = 100;
-    int lostProbeMini = 3;
+
+    const int LOSING_PROBABILITY = 50;
+    const int LOST_NUMBER = 5;
 
     Reader() {}
 
@@ -114,21 +115,21 @@ public:
     {
         for (int i = 0; i < availableBooksCount; i++)
         {
-            int loseBook = 0 + rand() % lostProbe;
             if (books[i]->isInLib == false && books[i]->readerId == this->id)
             {
-                if (loseBook < lostProbeMini)
+                if (books[i]->readerId == this->id)
                 {
-                    books[i]->isInLib = false;
-                    books[i]->readerId = -1;
+                    books[i]->timeUntilEnd--;
                 }
-                else
+                if (books[i]->timeUntilEnd <= 0)
                 {
-                    if (books[i]->readerId == this->id)
+                    int loseBook = 0 + rand() % LOSING_PROBABILITY;
+                    if (loseBook < LOST_NUMBER)
                     {
-                        books[i]->timeUntilEnd--;
+                        books[i]->isInLib = false;
+                        books[i]->readerId = -1;
                     }
-                    if (books[i]->timeUntilEnd <= 0)
+                    else
                     {
                         books[i]->returnBook();
                     }
@@ -174,28 +175,28 @@ public:
     {
         for (int i = 0; i < availableBooksCount; i++)
         {
-            int loseBook = 0 + rand() % lostProbe;
+            int loseBook = 0 + rand() % LOSING_PROBABILITY;
             if (books[i]->isInLib == false && books[i]->readerId == this->id)
             {
-                if (loseBook < lostProbeMini)
+                if (books[i]->timeUntilEnd <= 0)
                 {
-                    books[i]->isInLib = false;
-                    books[i]->readerId = -1;
-                }
-                else
-                {
-                    if (books[i]->timeUntilEnd <= 0)
+                    int returnOrNot = 0 + rand() % 10;
+                    if (returnOrNot < 2)
                     {
-                        int returnOrNot = 0 + rand() % 10;
-                        if (returnOrNot < 2)
+                        if (loseBook < LOST_NUMBER)
+                        {
+                            books[i]->isInLib = false;
+                            books[i]->readerId = -1;
+                        }
+                        else
                         {
                             books[i]->returnBook();
                         }
                     }
-                    if (books[i]->readerId == this->id)
-                    {
-                        books[i]->timeUntilEnd--;
-                    }
+                }
+                if (books[i]->readerId == this->id)
+                {
+                    books[i]->timeUntilEnd--;
                 }
             }
         }
@@ -231,7 +232,6 @@ public:
     {
         bookCount = 40 + rand() % 80;
         books = new Book[bookCount];
-        readerCount = 3;
         readers = new Reader *[readerCount];
 
         for (int i = 0; i < readerCount; i++)
@@ -243,6 +243,60 @@ public:
         {
             Book book(i);
             *(books + i) = book;
+        }
+    }
+
+    void giveBooks(Reader &r, Library &lib)
+    {
+        int *booksIndexes = new int[r.neededBooksCount];
+        int j = 0;
+        for (int i = 0; i < r.neededBooksCount; i++)
+        {
+            if (lib.bookIsAvailable(r.neededBooks[i]))
+            {
+                r.availableBooksCount++;
+                booksIndexes[j] = i;
+                j++;
+            }
+        }
+
+        r.books = new Book *[r.availableBooksCount];
+        for (int i = 0; i < r.availableBooksCount; i++)
+        {
+            r.books[i] = &lib.books[booksIndexes[i]];
+            lib.books[booksIndexes[i]].isInLib = false;
+            lib.books[booksIndexes[i]].readerId = r.id;
+        }
+        delete[] booksIndexes;
+    }
+
+    void initLibrary()
+    {
+        int normalCount;
+        std::cout << "Normal readers: ";
+        std::cin >> normalCount;
+        int greadyCount;
+        std::cout << "Gready readers: ";
+        std::cin >> greadyCount;
+        int carelessCount;
+        std::cout << "Careless readers: ";
+        std::cin >> carelessCount;
+
+        readerCount = normalCount + greadyCount + carelessCount;
+        for (int i = 0; i < normalCount; i++)
+        {
+            readers[i] = new NormalReader(i);
+            giveBooks(*readers[i], *this);
+        }
+        for (int i = normalCount; i < normalCount + greadyCount; i++)
+        {
+            readers[i] = new GreadyReader(i);
+            giveBooks(*readers[i], *this);
+        }
+        for (int i = normalCount + greadyCount; i < readerCount; i++)
+        {
+            readers[i] = new CarelessReader(i);
+            giveBooks(*readers[i], *this);
         }
     }
 
@@ -335,51 +389,23 @@ void getBook(int readerId, Book &book)
     book.isInLib = false;
 }
 
-void getBooks(Reader &r, Library &lib)
+void lifecycle(int lifetime, Library &lib)
 {
-    int *booksIndexes = new int[r.neededBooksCount];
-    int j = 0;
-    for (int i = 0; i < r.neededBooksCount; i++)
-    {
-        if (lib.bookIsAvailable(r.neededBooks[i]))
-        {
-            r.availableBooksCount++;
-            booksIndexes[j] = i;
-            j++;
-        }
-    }
-
-    r.books = new Book *[r.availableBooksCount];
-    for (int i = 0; i < r.availableBooksCount; i++)
-    {
-        r.books[i] = &lib.books[booksIndexes[i]];
-        lib.books[booksIndexes[i]].isInLib = false;
-        lib.books[booksIndexes[i]].readerId = r.id;
-    }
-    delete[] booksIndexes;
-}
-
-int main()
-{
-    int lifetime = 50;
-
-    Library lib;
-
-    lib.readers[0] = new NormalReader(1);
-    getBooks(*lib.readers[0], lib);
-
-    lib.readers[1] = new GreadyReader(2);
-    getBooks(*lib.readers[1], lib);
-
-    lib.readers[2] = new CarelessReader(3);
-    getBooks(*lib.readers[2], lib);
-
     for (int i = 0; i < lifetime; i++)
     {
         std::cout << "Day " << i << ":" << std::endl;
         lib.day();
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
+}
+
+const int lifetime = 50;
+int main()
+{
+    Library lib;
+    lib.initLibrary();
+
+    lifecycle(lifetime, lib);
 
     lib.release();
     return 0;
