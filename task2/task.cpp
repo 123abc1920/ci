@@ -281,6 +281,21 @@ public:
         return count;
     }
 
+    int forgottenBookCount()
+    {
+        int count = 0;
+
+        for (int i = 0; i < bookCount; i++)
+        {
+            if (!books[i].isInLib && books[i].readerId != -1 && books[i].timeUntilEnd < 0)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     void release()
     {
         delete[] this->books;
@@ -299,7 +314,8 @@ public:
     void print() override
     {
         std::cout << " In library now: " << inBookCount() << "/" << bookCount << std::endl
-                  << " Lost: " << lostBookCount() << std::endl;
+                  << " Lost: " << lostBookCount() << std::endl
+                  << " Forgotten: " << forgottenBookCount() << std::endl;
         std::cout << std::endl;
     }
 
