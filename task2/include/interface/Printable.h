@@ -8,7 +8,6 @@ class Printable
 {
 public:
     Printable();
-    virtual ~Printable() {}
     virtual void print(std::ofstream& report);
 };
 

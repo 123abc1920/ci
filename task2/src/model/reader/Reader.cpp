@@ -25,7 +25,7 @@ Reader::Reader(int _id)
     }
 }
 
-void Reader::releaseReader()
+Reader::~Reader()
 {
     delete[] neededBooks;
     delete[] books;

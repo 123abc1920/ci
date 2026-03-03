@@ -15,6 +15,20 @@ Library::Library()
     }
 }
 
+Library::~Library()
+{
+    delete[] this->books;
+
+    for (int i = 0; i < readerCount; i++)
+    {
+        if (readers[i] != nullptr)
+        {
+            delete readers[i];
+        }
+    }
+    delete[] readers;
+}
+
 void Library::giveBooks(Reader &r, Library &lib)
 {
     int *booksIndexes = new int[r.neededBooksCount];
@@ -122,21 +136,6 @@ int Library::forgottenBookCount()
     }
 
     return count;
-}
-
-void Library::release()
-{
-    delete[] this->books;
-
-    for (int i = 0; i < readerCount; i++)
-    {
-        if (readers[i] != nullptr)
-        {
-            readers[i]->releaseReader();
-            delete readers[i];
-        }
-    }
-    delete[] readers;
 }
 
 void Library::printStatistic(std::ofstream &report)

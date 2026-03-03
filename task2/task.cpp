@@ -66,7 +66,6 @@ int main()
 
     lib.printStatistic(report);
 
-    lib.release();
     report.close();
 
     std::cout << "Press Enter to close...";

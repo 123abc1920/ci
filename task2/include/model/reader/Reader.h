@@ -19,7 +19,8 @@ public:
     Reader();
     Reader(int _id);
 
-    void releaseReader();
+    ~Reader();
+
     void print(std::ofstream &report) override;
     void day(std::ofstream &report) override;
 };

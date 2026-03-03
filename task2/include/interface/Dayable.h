@@ -7,7 +7,6 @@ class Dayable
 {
 public:
     Dayable();
-    virtual ~Dayable() {}
     virtual void day(std::ofstream &report);
 };
 

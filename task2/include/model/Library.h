@@ -20,13 +20,14 @@ public:
 
     Library();
 
+    ~Library();
+
     void giveBooks(Reader &r, Library &lib);
     void initLibrary();
     bool bookIsAvailable(int ind);
     int inBookCount();
     int lostBookCount();
     int forgottenBookCount();
-    void release();
     void printStatistic(std::ofstream &report);
 
     void print(std::ofstream &report) override;
