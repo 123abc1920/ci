@@ -27,6 +27,66 @@ void Book::returnBook()
     readerId = -1;
 }
 
+void Book::giveBook(int readerId)
+{
+    this->isInLib = false;
+    this->readerId = readerId;
+}
+
+bool Book::isAvailable()
+{
+    return this->isInLib;
+}
+
+bool Book::isLost()
+{
+    if (!this->isInLib && this->readerId == -1)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Book::isForgotten()
+{
+    if (!this->isInLib && this->readerId != -1 && this->timeUntilEnd < 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+int Book::getReaderId()
+{
+    return this->readerId;
+}
+
+void Book::setReaderId(int id)
+{
+    this->readerId = id;
+}
+
+void Book::setAvailable(bool isAvailable)
+{
+    this->isInLib = isAvailable;
+}
+
+void Book::bookDay()
+{
+    this->timeUntilEnd--;
+}
+
+void Book::setLost()
+{
+    this->isInLib = false;
+    this->readerId = -1;
+}
+
+int Book::getTimeUntilend()
+{
+    return this->timeUntilEnd;
+}
+
 void Book::print(std::ofstream &report)
 {
     std::cout << "  ID: " << id << std::endl

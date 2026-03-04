@@ -17,17 +17,17 @@ void CarelessReader::day(std::ofstream &report)
     for (int i = 0; i < availableBooksCount; i++)
     {
         int loseBook = 0 + rand() % LOSING_PROBABILITY;
-        if (books[i]->isInLib == false && books[i]->readerId == this->id)
+        if (books[i]->isAvailable() == false && books[i]->getReaderId() == this->id)
         {
-            if (books[i]->timeUntilEnd <= 0)
+            if (books[i]->getTimeUntilend() <= 0)
             {
                 int returnOrNot = 0 + rand() % 10;
                 if (returnOrNot < 2)
                 {
                     if (loseBook < LOST_NUMBER)
                     {
-                        books[i]->isInLib = false;
-                        books[i]->readerId = -1;
+                        books[i]->setAvailable(false);
+                        books[i]->setReaderId(-1);
                     }
                     else
                     {
@@ -35,9 +35,9 @@ void CarelessReader::day(std::ofstream &report)
                     }
                 }
             }
-            if (books[i]->readerId == this->id)
+            if (books[i]->getReaderId() == this->id)
             {
-                books[i]->timeUntilEnd--;
+                books[i]->bookDay();
             }
         }
     }

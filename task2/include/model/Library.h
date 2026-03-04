@@ -8,16 +8,21 @@
 
 class Library : Printable, Dayable
 {
-public:
+private:
+    double normal;
+    double gready;
+    double careless;
+
     Book *books;
     int bookCount;
     Reader **readers;
     int readerCount;
 
-    double normal;
-    double gready;
-    double careless;
+    int inBookCount();
+    int lostBookCount();
+    int forgottenBookCount();
 
+public:
     Library();
 
     ~Library();
@@ -25,9 +30,6 @@ public:
     void giveBooks(Reader &r, Library &lib);
     void initLibrary();
     bool bookIsAvailable(int ind);
-    int inBookCount();
-    int lostBookCount();
-    int forgottenBookCount();
     void printStatistic(std::ofstream &report);
 
     void print(std::ofstream &report) override;

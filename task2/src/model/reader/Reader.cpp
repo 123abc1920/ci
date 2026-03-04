@@ -39,7 +39,7 @@ void Reader::print(std::ofstream &report)
            << " Books: " << std::endl;
     for (int i = 0; i < availableBooksCount; i++)
     {
-        if (books[i]->readerId == this->id)
+        if (books[i]->getReaderId() == this->id)
         {
             books[i]->print(report);
         }
@@ -52,19 +52,18 @@ void Reader::day(std::ofstream &report)
 {
     for (int i = 0; i < availableBooksCount; i++)
     {
-        if (books[i]->isInLib == false && books[i]->readerId == this->id)
+        if (books[i]->isAvailable() == false && books[i]->getReaderId() == this->id)
         {
-            if (books[i]->readerId == this->id)
+            if (books[i]->getReaderId() == this->id)
             {
-                books[i]->timeUntilEnd--;
+                books[i]->bookDay();
             }
-            if (books[i]->timeUntilEnd <= 0)
+            if (books[i]->getTimeUntilend() <= 0)
             {
                 int loseBook = 0 + rand() % LOSING_PROBABILITY;
                 if (loseBook < LOST_NUMBER)
                 {
-                    books[i]->isInLib = false;
-                    books[i]->readerId = -1;
+                    books[i]->setLost();
                 }
                 else
                 {
@@ -75,3 +74,52 @@ void Reader::day(std::ofstream &report)
     }
     this->print(report);
 }
+
+int Reader::getId()
+{
+    return this->id;
+}
+
+int Reader::getNeededBook(int i)
+{
+    return this->neededBooks[i];
+}
+
+void Reader::setBooks(int count)
+{
+    this->availableBooksCount = count;
+    this->books = new Book *[this->availableBooksCount];
+}
+
+void Reader::setBook(int index, Book &book)
+{
+    this->books[index] = &book;
+}
+
+void Reader::setNeededBookCount(int count)
+{
+    if (count < 0)
+    {
+        count = 0;
+    }
+    this->neededBooksCount = count;
+};
+
+void Reader::setAvailableBookCount(int count)
+{
+    if (count < 0)
+    {
+        count = 0;
+    }
+    this->availableBooksCount = count;
+};
+
+int Reader::getNeededBookCount()
+{
+    return this->neededBooksCount;
+};
+
+int Reader::getAvailableBookCount()
+{
+    return this->availableBooksCount;
+};

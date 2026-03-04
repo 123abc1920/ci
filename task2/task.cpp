@@ -9,8 +9,8 @@ std::ofstream report;
 
 void getBook(int readerId, Book &book)
 {
-    book.readerId = readerId;
-    book.isInLib = false;
+    book.setReaderId(readerId);
+    book.setAvailable(false);
 }
 
 void lifecycle(int lifetime, Library &lib)

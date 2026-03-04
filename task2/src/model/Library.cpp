@@ -31,24 +31,24 @@ Library::~Library()
 
 void Library::giveBooks(Reader &r, Library &lib)
 {
-    int *booksIndexes = new int[r.neededBooksCount];
+    int *booksIndexes = new int[r.getNeededBookCount()];
     int j = 0;
-    for (int i = 0; i < r.neededBooksCount; i++)
+    int availableBooksCount = 0;
+    for (int i = 0; i < r.getNeededBookCount(); i++)
     {
-        if (lib.bookIsAvailable(r.neededBooks[i]))
+        if (lib.bookIsAvailable(r.getNeededBook(i)))
         {
-            r.availableBooksCount++;
+            availableBooksCount++;
             booksIndexes[j] = i;
             j++;
         }
     }
 
-    r.books = new Book *[r.availableBooksCount];
-    for (int i = 0; i < r.availableBooksCount; i++)
+    r.setBooks(availableBooksCount);
+    for (int i = 0; i < r.getAvailableBookCount(); i++)
     {
-        r.books[i] = &lib.books[booksIndexes[i]];
-        lib.books[booksIndexes[i]].isInLib = false;
-        lib.books[booksIndexes[i]].readerId = r.id;
+        r.setBook(i, lib.books[booksIndexes[i]]);
+        lib.books[booksIndexes[i]].giveBook(r.getId());
     }
     delete[] booksIndexes;
 }
@@ -90,7 +90,7 @@ void Library::initLibrary()
 
 bool Library::bookIsAvailable(int ind)
 {
-    return books[ind].isInLib;
+    return books[ind].isAvailable();
 }
 
 int Library::inBookCount()
@@ -99,7 +99,7 @@ int Library::inBookCount()
 
     for (int i = 0; i < bookCount; i++)
     {
-        if (books[i].isInLib)
+        if (books[i].isAvailable())
         {
             count++;
         }
@@ -114,7 +114,7 @@ int Library::lostBookCount()
 
     for (int i = 0; i < bookCount; i++)
     {
-        if (!books[i].isInLib && books[i].readerId == -1)
+        if (books[i].isLost())
         {
             count++;
         }
@@ -129,7 +129,7 @@ int Library::forgottenBookCount()
 
     for (int i = 0; i < bookCount; i++)
     {
-        if (!books[i].isInLib && books[i].readerId != -1 && books[i].timeUntilEnd < 0)
+        if (books[i].isForgotten())
         {
             count++;
         }
@@ -157,7 +157,7 @@ void Library::printStatistic(std::ofstream &report)
 
     for (int i = 0; i < readerCount; i++)
     {
-        if (books[i].isInLib == false && books[i].readerId == -1)
+        if (books[i].isLost())
         {
             books[i].print(report);
         }
