@@ -10,7 +10,7 @@ class Library : Printable, Dayable
 {
 private:
     double normal;
-    double gready;
+    double greedy;
     double careless;
 
     Book *books;

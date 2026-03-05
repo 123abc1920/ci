@@ -1,6 +1,6 @@
-#include "GreadyReader.h"
+#include "GreedyReader.h"
 
-GreadyReader::GreadyReader(int _id) : Reader(_id)
+GreedyReader::GreedyReader(int _id) : Reader(_id)
 {
     id = _id;
 

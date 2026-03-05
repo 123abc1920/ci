@@ -1,7 +1,7 @@
 #include "Library.h"
 #include "NormalReader.h"
 #include "CarelessReader.h"
-#include "GreadyReader.h"
+#include "GreedyReader.h"
 
 Library::Library()
 {
@@ -58,30 +58,30 @@ void Library::initLibrary()
     int normalCount;
     std::cout << "Normal readers: ";
     std::cin >> normalCount;
-    int greadyCount;
-    std::cout << "Gready readers: ";
-    std::cin >> greadyCount;
+    int greedyCount;
+    std::cout << "Greedy readers: ";
+    std::cin >> greedyCount;
     int carelessCount;
     std::cout << "Careless readers: ";
     std::cin >> carelessCount;
 
     normal = normalCount;
-    gready = greadyCount;
+    greedy = greedyCount;
     careless = carelessCount;
 
-    readerCount = normalCount + greadyCount + carelessCount;
+    readerCount = normalCount + greedyCount + carelessCount;
     readers = new Reader *[readerCount];
     for (int i = 0; i < normalCount; i++)
     {
         readers[i] = new NormalReader(i);
         giveBooks(*readers[i], *this);
     }
-    for (int i = normalCount; i < normalCount + greadyCount; i++)
+    for (int i = normalCount; i < normalCount + greedyCount; i++)
     {
-        readers[i] = new GreadyReader(i);
+        readers[i] = new GreedyReader(i);
         giveBooks(*readers[i], *this);
     }
-    for (int i = normalCount + greadyCount; i < readerCount; i++)
+    for (int i = normalCount + greedyCount; i < readerCount; i++)
     {
         readers[i] = new CarelessReader(i);
         giveBooks(*readers[i], *this);
@@ -144,14 +144,14 @@ void Library::printStatistic(std::ofstream &report)
               << " Readers: " << readerCount << std::endl
               << " Lost books count: " << lostBookCount() << std::endl
               << " Normal readers: " << normal << std::endl
-              << " Gready readers: " << gready << std::endl
+              << " Greedy readers: " << greedy << std::endl
               << " Careless readers: " << careless << std::endl
               << " Lost books list: " << std::endl;
     report << "Summary: " << std::endl
            << " Readers: " << readerCount << std::endl
            << " Lost books: " << lostBookCount() << std::endl
            << " Normal readers: " << normal << std::endl
-           << " Gready readers: " << gready << std::endl
+           << " Greedy readers: " << greedy << std::endl
            << " Careless readers: " << careless << std::endl
            << " Lost books list: " << std::endl;
 
