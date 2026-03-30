@@ -32,6 +32,7 @@ public:
         content = new T[BASE_COUNT];
         length = BASE_COUNT;
     }
+
     TheSet(const TheSet &other)
     {
         length = other.length;
@@ -57,6 +58,7 @@ public:
         content[count] = el;
         count++;
     }
+
     bool contain(T el)
     {
         for (int i = 0; i < count; i++)
@@ -68,6 +70,7 @@ public:
         }
         return false;
     }
+
     void remove(T el)
     {
         bool shift = false;
@@ -91,6 +94,7 @@ public:
             count--;
         }
     }
+
     void clear()
     {
         delete[] content;
@@ -99,7 +103,17 @@ public:
         length = BASE_COUNT;
     }
 
-    const T *getAll() const
+    bool isEmpty()
+    {
+        if (count == 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    const T *
+    getAll() const
     {
         return content;
     }
@@ -212,10 +226,12 @@ int main()
 
     set = set - set3;
 
+    std::cout << set.isEmpty() << std::endl;
     set.print();
 
     set.clear();
 
+    std::cout << set.isEmpty() << std::endl;
     set.print();
 
     return 0;
