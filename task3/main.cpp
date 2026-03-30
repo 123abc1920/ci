@@ -112,8 +112,7 @@ public:
         return false;
     }
 
-    const T *
-    getAll() const
+    const T *getAll() const
     {
         return content;
     }
@@ -138,6 +137,7 @@ public:
         }
         return *this;
     }
+
     TheSet operator+(const TheSet &other)
     {
         TheSet result = *this;
@@ -163,6 +163,7 @@ public:
         }
         return result;
     }
+
     TheSet operator-(const TheSet &other)
     {
         TheSet result = *this;
@@ -175,6 +176,24 @@ public:
             result.remove(newEls[i]);
         }
         return result;
+    }
+
+    bool operator==(const TheSet &other)
+    {
+        TheSet result = *this;
+
+        const T *newEls = other.getAll();
+        int size = other.size();
+
+        for (int i = 0; i < size; i++)
+        {
+            if (!result.contain(newEls[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     void print()
@@ -225,12 +244,16 @@ int main()
     set3.print();
 
     set = set - set3;
-
     std::cout << set.isEmpty() << std::endl;
     set.print();
 
-    set.clear();
+    TheSet<int> set4;
+    set4.add(1);
+    set4.add(5);
 
+    std::cout << (set4 == set) << std::endl;
+
+    set.clear();
     std::cout << set.isEmpty() << std::endl;
     set.print();
 
