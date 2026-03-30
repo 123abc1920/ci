@@ -91,6 +91,13 @@ public:
             count--;
         }
     }
+    void clear()
+    {
+        delete[] content;
+        content = new T[BASE_COUNT];
+        count = 0;
+        length = BASE_COUNT;
+    }
 
     const T *getAll() const
     {
@@ -204,6 +211,10 @@ int main()
     set3.print();
 
     set = set - set3;
+
+    set.print();
+
+    set.clear();
 
     set.print();
 
