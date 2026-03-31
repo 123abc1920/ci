@@ -53,6 +53,14 @@ public:
 
     void add(T el)
     {
+        for (int i = 0; i < count; i++)
+        {
+            if (content[i] == el)
+            {
+                return;
+            }
+        }
+
         if (count + 1 > length)
         {
             updLength();
