@@ -2,6 +2,7 @@
 #define THESET_H
 
 #include <iostream>
+#include "iterator.h"
 
 template <typename T>
 class TheSet
@@ -213,6 +214,11 @@ public:
             std::cout << content[i] << " ";
         }
         std::cout << std::endl;
+    }
+
+    Iterator<T> iterator()
+    {
+        return Iterator<T>(this->content, this->count);
     }
 };
 

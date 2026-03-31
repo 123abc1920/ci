@@ -112,6 +112,22 @@ void clearing(const T &a, const T &b)
     set.print();
 }
 
+template <typename T>
+void iterating(const T &a, const T &b, const T &c)
+{
+    TheSet<T> set;
+    set.add(a);
+    set.add(b);
+    set.add(c);
+
+    std::cout << "Iterator: " << std::endl;
+    Iterator<T> iter = set.iterator();
+    while (iter.hasNext())
+    {
+        std::cout << iter.next() << " ";
+    }
+}
+
 void intSet()
 {
     std::cout << "INT: " << std::endl
@@ -129,6 +145,9 @@ void intSet()
     std::cout << std::endl;
 
     clearing<int>(1, 5);
+    std::cout << std::endl;
+
+    iterating<int>(1, 2, 5);
 }
 
 void strSet()
@@ -148,6 +167,9 @@ void strSet()
     std::cout << std::endl;
 
     clearing<std::string>("1", "5");
+    std::cout << std::endl;
+
+    iterating<std::string>("1", "2", "5");
 }
 
 #endif
