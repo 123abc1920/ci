@@ -54,12 +54,9 @@ public:
 
     void add(T el)
     {
-        for (int i = 0; i < count; i++)
+        if (this->contain(el))
         {
-            if (content[i] == el)
-            {
-                return;
-            }
+            return;
         }
 
         if (count + 1 > length)

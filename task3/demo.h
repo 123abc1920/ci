@@ -22,6 +22,7 @@ void basics(const T &a, const T &b, const T &c)
     set.add(a);
     set.add(b);
     set.add(c);
+    set.add(c);
 
     printSetInfo(set, "Set 1");
 

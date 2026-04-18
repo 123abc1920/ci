@@ -4,8 +4,9 @@
 #include <iostream>
 
 template <typename T>
-struct Node
+class Node
 {
+public:
     T data;
     Node *next;
 
