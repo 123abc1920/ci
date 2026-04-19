@@ -11,9 +11,9 @@ qt_standard_project_setup()
 
 qt_add_executable(Task4
     main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui
+    ui/view/mainwindow/mainwindow.cpp
+    ui/view/mainwindow/mainwindow.h
+    ui/view/mainwindow/mainwindow.ui
 )
 
 target_link_libraries(Task4 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
