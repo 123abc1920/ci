@@ -1,16 +1,8 @@
-#include <iostream>
-#include <string>
-#include <map>
+#include "FileReader.h"
 
-using namespace std;
-
-class FileReader
+map<int, Student> FileReader::readDB(string path)
 {
-public:
-    map<int, string> readDB(string path)
-    {
-        map<int, string> result;
+    map<int, Student> result;
 
-        return result;
-    }
-};
+    return result;
+}

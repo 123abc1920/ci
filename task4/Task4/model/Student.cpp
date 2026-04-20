@@ -1,40 +1,26 @@
-#include <iostream>
-#include <set>
-#include <string>
+#include "Student.h";
 
-using namespace std;
-
-class Student
+string Student::getName() const
 {
-private:
-    string name;
-    set<string> subjects;
+    return name;
+}
 
-public:
-    Student(const string &_name) : name(_name) {}
+void Student::addSubject(const string &newSubject)
+{
+    subjects.insert(newSubject);
+}
 
-    string getName() const
+const set<string> &Student::getAllSubjects() const
+{
+    return subjects;
+}
+
+bool Student::isLearnSubject(string subject)
+{
+    auto count = this->subjects.count(subject);
+    if (count > 0)
     {
-        return name;
+        return true;
     }
-
-    void addSubject(const string &newSubject)
-    {
-        subjects.insert(newSubject);
-    }
-
-    const set<string> &getAllSubjects() const
-    {
-        return subjects;
-    }
-
-    bool isLearnSubject(string subject)
-    {
-        auto count = this->subjects.count(subject);
-        if (count > 0)
-        {
-            return true;
-        }
-        return false;
-    }
-};
+    return false;
+}

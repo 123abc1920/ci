@@ -1,45 +1,33 @@
-#include <iostream>
-#include <set>
-#include <string>
+#include "Query.h"
 
-using namespace std;
-
-class Query
+void Query::addInclude(string subject)
 {
-private:
-    set<string> includes;
-    set<string> excludes;
-
-public:
-    void addInclude(string subject)
+    if (includes.count(subject) <= 0)
     {
-        if (includes.count(subject) <= 0)
-        {
-            includes.insert(subject);
-        }
+        includes.insert(subject);
     }
+}
 
-    void addExclude(string subject)
+void Query::addExclude(string subject)
+{
+    if (excludes.count(subject) <= 0)
     {
-        if (excludes.count(subject) <= 0)
-        {
-            excludes.insert(subject);
-        }
+        excludes.insert(subject);
     }
+}
 
-    void deleteInclude(string subject)
+void Query::deleteInclude(string subject)
+{
+    while (includes.count(subject) > 0)
     {
-        while (includes.count(subject) > 0)
-        {
-            includes.erase(subject);
-        }
+        includes.erase(subject);
     }
+}
 
-    void deleteExclude(string subject)
+void Query::deleteExclude(string subject)
+{
+    while (excludes.count(subject) > 0)
     {
-        while (excludes.count(subject) > 0)
-        {
-            excludes.erase(subject);
-        }
+        excludes.erase(subject);
     }
-};
+}

@@ -14,6 +14,19 @@ qt_add_executable(Task4
     ui/view/mainwindow/mainwindow.cpp
     ui/view/mainwindow/mainwindow.h
     ui/view/mainwindow/mainwindow.ui
+
+    service/FileReader.cpp
+    service/FileReader.h
+    service/Logger.cpp
+    service/Logger.h
+
+    repository/InMemoryRepository.cpp
+    repository/InMemoryRepository.h
+
+    model/Student.h
+    model/Student.cpp
+    model/Query.cpp
+    model/Query.h
 )
 
 target_link_libraries(Task4 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
