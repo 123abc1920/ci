@@ -189,6 +189,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="openFileBtn">
+          <property name="text">
+           <string>Открыть файл</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QListView" name="searchResultList"/>
         </item>
        </layout>
