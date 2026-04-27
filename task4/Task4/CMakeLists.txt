@@ -15,6 +15,9 @@ qt_add_executable(Task4
     ui/view/mainwindow/mainwindow.h
     ui/view/mainwindow/mainwindow.ui
 
+    viewmodel/MainViewModel.h
+    viewmodel/MainViewModel.cpp
+
     service/FileReader.cpp
     service/FileReader.h
     service/Logger.cpp
@@ -27,6 +30,15 @@ qt_add_executable(Task4
     model/Student.cpp
     model/Query.cpp
     model/Query.h
+)
+
+target_include_directories(Task4 PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/service
+    ${CMAKE_CURRENT_SOURCE_DIR}/repository
+    ${CMAKE_CURRENT_SOURCE_DIR}/model
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/view/mainwindow
+    ${CMAKE_CURRENT_SOURCE_DIR}/viewmodel
 )
 
 target_link_libraries(Task4 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)

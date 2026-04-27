@@ -1,18 +1,20 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <map>
-#include "../model/Student.h"
+#include "Student.h"
 
 using namespace std;
 
 class InMemoryRepository
 {
 private:
-    map<int, Student> InMemoryDB;
+    map<int, Student> inMemoryDB;
 
 public:
-    InMemoryRepository(const map<int, Student> &data)
-    {
-        InMemoryDB = data;
-    }
+    InMemoryRepository();
+
+    void setData(const map<int, Student> &data);
+    map<int, Student> getAll();
 };

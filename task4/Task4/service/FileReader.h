@@ -1,12 +1,18 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <map>
-#include "../model/Student.h"
+#include <vector>
+#include "Student.h"
 
 using namespace std;
 
 class FileReader
 {
+private:
+    map<string, vector<string>> parse(const string &data);
+
 public:
-    map<int, Student> readDB(string path);
+    map<int, Student> readDB(string data);
 };
