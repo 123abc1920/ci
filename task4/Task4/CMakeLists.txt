@@ -14,9 +14,14 @@ qt_add_executable(Task4
     ui/view/mainwindow/mainwindow.cpp
     ui/view/mainwindow/mainwindow.h
     ui/view/mainwindow/mainwindow.ui
+    ui/view/resultwindow/resultwindow.cpp
+    ui/view/resultwindow/resultwindow.h
+    ui/view/resultwindow/resultwindow.ui
 
     viewmodel/MainViewModel.h
     viewmodel/MainViewModel.cpp
+    viewmodel/ResultViewModel.h
+    viewmodel/ResultViewModel.cpp
 
     service/FileReader.cpp
     service/FileReader.h
@@ -38,6 +43,7 @@ target_include_directories(Task4 PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/repository
     ${CMAKE_CURRENT_SOURCE_DIR}/model
     ${CMAKE_CURRENT_SOURCE_DIR}/ui/view/mainwindow
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/view/resultwindow
     ${CMAKE_CURRENT_SOURCE_DIR}/viewmodel
 )
 

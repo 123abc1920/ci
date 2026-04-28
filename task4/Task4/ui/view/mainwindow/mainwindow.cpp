@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "resultwindow.h"
 #include <iostream>
 #include <set>
 #include <string>
@@ -69,6 +70,14 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
                 string selectedText = ui->excludeSubjectList->currentIndex().data().toString().toStdString();
                 this->viewModel.removeFromQuery(selectedText, true);
                 updateSubjectDataLists(); });
+
+    connect(ui->searchBtn, &QPushButton::clicked, [=]()
+            {
+                ResultViewModel* viewModel = new ResultViewModel();
+                ResultWindow* window = new ResultWindow(*viewModel, this);
+                window->setAttribute(Qt::WA_DeleteOnClose);
+                window->show();
+            });
 }
 
 string MainWindow::openFile()
