@@ -43,6 +43,20 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
 
             model->setStringList(items);
             ui->dataList->setModel(model); });
+
+    connect(ui->addIncludeSubjectBtn, &QPushButton::clicked, [=]()
+            {
+                string selectedText = ui->includeComboBox->currentText().toStdString();
+                this->viewModel.addToQuery(selectedText, false);
+                ui->searchQuery->setText(QString::fromStdString(this->viewModel.getQueryText()));
+                updateSubjectDataLists(); });
+
+    connect(ui->addExcludeSubjectBtn, &QPushButton::clicked, [=]()
+            {
+                string selectedText = ui->excludeComboBox->currentText().toStdString();
+                this->viewModel.addToQuery(selectedText, true);
+                ui->searchQuery->setText(QString::fromStdString(this->viewModel.getQueryText()));
+                updateSubjectDataLists(); });
 }
 
 string MainWindow::openFile()
@@ -70,6 +84,40 @@ string MainWindow::openFile()
     file.close();
 
     return content.toStdString();
+}
+
+void MainWindow::updateExcludes()
+{
+    QStringListModel *model = new QStringListModel(this);
+    QStringList items;
+
+    for (auto &subject : this->viewModel.getQueryData(true))
+    {
+        items << QString::fromStdString(subject);
+    }
+
+    model->setStringList(items);
+    ui->excludeSubjectList->setModel(model);
+}
+
+void MainWindow::updateIncludes()
+{
+    QStringListModel *model = new QStringListModel(this);
+    QStringList items;
+
+    for (auto &subject : this->viewModel.getQueryData(false))
+    {
+        items << QString::fromStdString(subject);
+    }
+
+    model->setStringList(items);
+    ui->includeSubjectList->setModel(model);
+}
+
+void MainWindow::updateSubjectDataLists()
+{
+    updateExcludes();
+    updateIncludes();
 }
 
 MainWindow::~MainWindow()

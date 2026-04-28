@@ -17,4 +17,8 @@ public:
     void addExclude(string subject);
     void deleteInclude(string subject);
     void deleteExclude(string subject);
+    string getIncludes();
+    string getExcludes();
+    set<string> getIncludesSet();
+    set<string> getExcludesSet();
 };

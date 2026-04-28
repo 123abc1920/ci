@@ -9,7 +9,9 @@ int main(int argc, char *argv[])
     FileReader fileReader;
     InMemoryRepository inMemoryRepository;
 
-    MainViewModel mainViewModel(fileReader, inMemoryRepository);
+    Query query;
+
+    MainViewModel mainViewModel(fileReader, inMemoryRepository, query);
 
     MainWindow w(mainViewModel);
     w.show();

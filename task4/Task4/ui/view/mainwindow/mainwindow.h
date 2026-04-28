@@ -22,4 +22,8 @@ private:
     Ui::MainWindow *ui;
     MainViewModel viewModel;
     string openFile();
+
+    void updateExcludes();
+    void updateIncludes();
+    void updateSubjectDataLists();
 };

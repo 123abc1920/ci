@@ -173,7 +173,7 @@
             <item>
              <widget class="QLabel" name="searchQuery">
               <property name="text">
-               <string>TextLabel</string>
+               <string>Выбрать студентов</string>
               </property>
              </widget>
             </item>
