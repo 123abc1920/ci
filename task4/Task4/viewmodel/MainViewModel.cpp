@@ -30,6 +30,18 @@ void MainViewModel::addToQuery(string subject, bool isExclude)
     }
 }
 
+void MainViewModel::removeFromQuery(string subject, bool isExclude)
+{
+    if (isExclude == true)
+    {
+        this->mainQuery.deleteExclude(subject);
+    }
+    else
+    {
+        this->mainQuery.deleteInclude(subject);
+    }
+}
+
 string MainViewModel::getQueryText()
 {
     return "Выбрать студентов, которые изучают " + this->mainQuery.getIncludes() + "но не изучают " + this->mainQuery.getExcludes();

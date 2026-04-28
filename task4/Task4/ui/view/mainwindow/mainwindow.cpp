@@ -57,6 +57,18 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
                 this->viewModel.addToQuery(selectedText, true);
                 ui->searchQuery->setText(QString::fromStdString(this->viewModel.getQueryText()));
                 updateSubjectDataLists(); });
+
+    connect(ui->removeIncludeSubjectBtn, &QPushButton::clicked, [=]()
+            {
+                string selectedText = ui->includeSubjectList->currentIndex().data().toString().toStdString();
+                this->viewModel.removeFromQuery(selectedText, false);
+                updateSubjectDataLists(); });
+
+    connect(ui->removeExcludeSubjectBtn, &QPushButton::clicked, [=]()
+            {
+                string selectedText = ui->excludeSubjectList->currentIndex().data().toString().toStdString();
+                this->viewModel.removeFromQuery(selectedText, true);
+                updateSubjectDataLists(); });
 }
 
 string MainWindow::openFile()

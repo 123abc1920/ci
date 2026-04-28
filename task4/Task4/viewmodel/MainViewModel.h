@@ -17,6 +17,7 @@ public:
     void readDB(string data);
     map<int, Student> getAllStudents();
     void addToQuery(string subject, bool isExclude);
+    void removeFromQuery(string subject, bool isExclude);
     string getQueryText();
     set<string> getQueryData(bool isExclude);
 };
