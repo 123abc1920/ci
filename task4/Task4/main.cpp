@@ -12,7 +12,6 @@ int main(int argc, char *argv[])
     Query query;
 
     MainViewModel mainViewModel(fileReader, inMemoryRepository, query);
-
     MainWindow w(mainViewModel);
     w.show();
 

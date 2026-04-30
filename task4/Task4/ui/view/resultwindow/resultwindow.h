@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QMdiArea>
 #include "ResultViewModel.h"
 
 QT_BEGIN_NAMESPACE
@@ -20,5 +21,5 @@ public:
 
 private:
     Ui::ResultWindow *ui;
-    ResultViewModel viewModel;
+    ResultViewModel &viewModel;
 };

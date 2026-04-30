@@ -13,8 +13,6 @@ ResultWindow::ResultWindow(ResultViewModel &viewModel, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::ResultWindow), viewModel(viewModel)
 {
     ui->setupUi(this);
-
-    this->viewModel = viewModel;
 }
 
 ResultWindow::~ResultWindow()

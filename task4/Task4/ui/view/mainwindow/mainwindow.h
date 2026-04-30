@@ -1,6 +1,8 @@
-#pragma once
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMdiArea>
 #include "MainViewModel.h"
 
 QT_BEGIN_NAMESPACE
@@ -15,15 +17,16 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(MainViewModel &viewModel, QWidget *parent = nullptr);
+    MainWindow(MainViewModel &viewModel, QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
-    MainViewModel viewModel;
-    string openFile();
+    QMdiArea *mdiArea;
 
-    void updateExcludes();
-    void updateIncludes();
-    void updateSubjectDataLists();
+    MainViewModel viewModel;
+
+    string openFile();
 };
+
+#endif

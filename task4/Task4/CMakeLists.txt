@@ -14,12 +14,25 @@ qt_add_executable(Task4
     ui/view/mainwindow/mainwindow.cpp
     ui/view/mainwindow/mainwindow.h
     ui/view/mainwindow/mainwindow.ui
+
+    ui/view/studentwindow/studentwindow.cpp
+    ui/view/studentwindow/studentwindow.h
+    ui/view/studentwindow/studentwindow.ui
+
+    ui/view/filterwindow/filterwindow.cpp
+    ui/view/filterwindow/filterwindow.h
+    ui/view/filterwindow/filterwindow.ui
+
     ui/view/resultwindow/resultwindow.cpp
     ui/view/resultwindow/resultwindow.h
     ui/view/resultwindow/resultwindow.ui
 
     viewmodel/MainViewModel.h
     viewmodel/MainViewModel.cpp
+    viewmodel/StudentViewModel.h
+    viewmodel/StudentViewModel.cpp
+    viewmodel/FilterViewModel.h
+    viewmodel/FilterViewModel.cpp
     viewmodel/ResultViewModel.h
     viewmodel/ResultViewModel.cpp
 
@@ -43,6 +56,8 @@ target_include_directories(Task4 PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/repository
     ${CMAKE_CURRENT_SOURCE_DIR}/model
     ${CMAKE_CURRENT_SOURCE_DIR}/ui/view/mainwindow
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/view/studentwindow
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/view/filterwindow
     ${CMAKE_CURRENT_SOURCE_DIR}/ui/view/resultwindow
     ${CMAKE_CURRENT_SOURCE_DIR}/viewmodel
 )
