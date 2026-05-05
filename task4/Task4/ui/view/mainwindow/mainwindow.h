@@ -27,6 +27,8 @@ private:
     MainViewModel viewModel;
 
     string openFile();
+
+    void updateMenuItems(QMdiSubWindow *activeWindow);
 };
 
 #endif

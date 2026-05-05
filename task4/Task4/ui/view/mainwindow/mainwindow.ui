@@ -39,7 +39,7 @@
     <property name="title">
      <string>Сохранить</string>
     </property>
-    <addaction name="action"/>
+    <addaction name="saveBtn"/>
    </widget>
    <widget class="QMenu" name="help">
     <property name="title">
@@ -61,8 +61,8 @@
    </widget>
    <addaction name="menu_2"/>
    <addaction name="menu"/>
-   <addaction name="saveFile"/>
    <addaction name="search"/>
+   <addaction name="saveFile"/>
    <addaction name="help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -71,7 +71,7 @@
     <string>Открыть</string>
    </property>
   </action>
-  <action name="action">
+  <action name="saveBtn">
    <property name="text">
     <string>Сохранить</string>
    </property>

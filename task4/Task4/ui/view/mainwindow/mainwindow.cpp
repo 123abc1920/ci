@@ -63,6 +63,11 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
         subWindow->setWindowTitle("Результаты");
         subWindow->setAttribute(Qt::WA_DeleteOnClose);
         subWindow->show(); });
+
+    connect(ui->mdiArea, &QMdiArea::subWindowActivated,
+            this, &MainWindow::updateMenuItems);
+
+    this->updateMenuItems(nullptr);
 }
 
 string MainWindow::openFile()
@@ -90,6 +95,35 @@ string MainWindow::openFile()
     file.close();
 
     return content.toStdString();
+}
+
+void MainWindow::updateMenuItems(QMdiSubWindow *activeWindow)
+{
+    ui->openFile->setEnabled(true);
+    ui->filterBtn->setEnabled(false);
+    ui->saveBtn->setEnabled(false);
+    ui->searchBtn->setEnabled(false);
+
+    if (!activeWindow)
+    {
+        return;
+    }
+
+    QWidget *content = activeWindow->widget();
+    QString className = content->metaObject()->className();
+
+    if (className == "StudentWindow")
+    {
+        ui->filterBtn->setEnabled(true);
+    }
+    if (className == "FilterWindow")
+    {
+        ui->searchBtn->setEnabled(true);
+    }
+    if (className == "ResultWindow")
+    {
+        ui->saveBtn->setEnabled(true);
+    }
 }
 
 MainWindow::~MainWindow()
