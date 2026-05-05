@@ -2,14 +2,16 @@
 
 #include "Query.h"
 #include <vector>
+#include "SubjectsRepository.h"
 
 class FilterViewModel
 {
 private:
     Query mainQuery;
+    SubjectsRepository subjectsRepository;
 
 public:
-    FilterViewModel();
+    FilterViewModel(const SubjectsRepository &subjectsRepository);
 
     void addToQuery(string subject, bool isExclude);
     void removeFromQuery(string subject, bool isExclude);

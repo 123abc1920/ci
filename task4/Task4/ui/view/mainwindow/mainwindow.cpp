@@ -48,7 +48,8 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
 
     connect(ui->filterBtn, &QAction::triggered, this, [this]()
             {
-        FilterViewModel *viewModel = new FilterViewModel();
+        FilterViewModel *viewModel = new FilterViewModel(this->viewModel.getSubjectsRepository());
+        qDebug() << "UI:" << this->viewModel.getSubjectsRepository().getAll().size();
         FilterWindow *filterWin = new FilterWindow(*viewModel, ui->mdiArea, this);
         QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(filterWin);
         subWindow->setWindowTitle("Фильтры");

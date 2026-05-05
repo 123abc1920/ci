@@ -15,4 +15,5 @@ private:
 
 public:
     map<int, Student> readDB(string data);
+    map<int, string> readSubjects(string data);
 };

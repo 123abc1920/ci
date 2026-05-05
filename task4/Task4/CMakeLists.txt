@@ -43,6 +43,8 @@ qt_add_executable(Task4
 
     repository/InMemoryRepository.cpp
     repository/InMemoryRepository.h
+    repository/SubjectsRepository.cpp
+    repository/SubjectsRepository.h
 
     model/Student.h
     model/Student.cpp

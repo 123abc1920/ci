@@ -1,6 +1,7 @@
 #include <QApplication>
 #include "ui/view/mainwindow/mainwindow.h"
 #include "MainViewModel.h"
+#include "SubjectsRepository.h"
 
 int main(int argc, char *argv[])
 {
@@ -8,10 +9,11 @@ int main(int argc, char *argv[])
 
     FileReader fileReader;
     InMemoryRepository inMemoryRepository;
+    SubjectsRepository subjectsRepository;
 
     Query query;
 
-    MainViewModel mainViewModel(fileReader, inMemoryRepository, query);
+    MainViewModel mainViewModel(fileReader, inMemoryRepository, query, subjectsRepository);
     MainWindow w(mainViewModel);
     w.show();
 

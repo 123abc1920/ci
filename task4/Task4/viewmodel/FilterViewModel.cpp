@@ -1,7 +1,10 @@
 #include "FilterViewModel.h"
+#include <QDebug>
 
-FilterViewModel::FilterViewModel()
+FilterViewModel::FilterViewModel(const SubjectsRepository &subjectsRepository)
 {
+    this->subjectsRepository = subjectsRepository;
+    qDebug() << "noUI:" << this->subjectsRepository.getAll().size();
 }
 
 void FilterViewModel::addToQuery(string subject, bool isExclude)
@@ -47,7 +50,7 @@ set<string> FilterViewModel::getQueryData(bool isExclude)
 
 vector<string> FilterViewModel::getSubjects()
 {
-    return {"Математика", "Физика", "Биология", "Химия"};
+    return this->subjectsRepository.getAll();
 }
 
 set<string> FilterViewModel::getIncludes()
