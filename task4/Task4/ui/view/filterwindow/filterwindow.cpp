@@ -2,8 +2,6 @@
 #include "ui_filterwindow.h"
 #include <QStringListModel>
 #include <QMdiSubWindow>
-#include "ResultViewModel.h"
-#include "resultwindow.h"
 
 FilterWindow::FilterWindow(FilterViewModel &viewModel, QMdiArea *mdiArea, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::FilterWindow), viewModel(viewModel), mdiArea(mdiArea)
@@ -40,16 +38,6 @@ FilterWindow::FilterWindow(FilterViewModel &viewModel, QMdiArea *mdiArea, QWidge
         string selectedText = ui->excludeList->currentIndex().data().toString().toStdString();
         this->viewModel.removeFromQuery(selectedText, true);
         updateSubjectDataLists(); });
-
-    connect(ui->searchBtn, &QPushButton::clicked, [=]()
-            {
-        ResultViewModel *vm = new ResultViewModel();
-    ResultWindow *win = new ResultWindow(*vm, this);
-    QMdiSubWindow *subWindow = mdiArea->addSubWindow(win);
-    //                                           ^^
-    subWindow->setWindowTitle("Результаты");
-    subWindow->setAttribute(Qt::WA_DeleteOnClose);
-    subWindow->show(); });
 }
 
 void FilterWindow::updateExcludes()

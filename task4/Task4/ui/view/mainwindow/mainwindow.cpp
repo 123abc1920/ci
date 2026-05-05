@@ -10,6 +10,8 @@
 #include <QMdiSubWindow>
 #include "studentwindow.h"
 #include "filterwindow.h"
+#include "ResultViewModel.h"
+#include "resultwindow.h"
 
 MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), viewModel(viewModel)
@@ -50,6 +52,15 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
         FilterWindow *filterWin = new FilterWindow(*viewModel, ui->mdiArea, this);
         QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(filterWin);
         subWindow->setWindowTitle("Фильтры");
+        subWindow->setAttribute(Qt::WA_DeleteOnClose);
+        subWindow->show(); });
+
+    connect(ui->searchBtn, &QAction::triggered, this, [this]()
+            {
+        ResultViewModel *vm = new ResultViewModel();
+        ResultWindow *win = new ResultWindow(*vm, this);
+        QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(win);
+        subWindow->setWindowTitle("Результаты");
         subWindow->setAttribute(Qt::WA_DeleteOnClose);
         subWindow->show(); });
 }

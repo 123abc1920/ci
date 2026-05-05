@@ -47,22 +47,22 @@
     </property>
     <addaction name="action_3"/>
    </widget>
-   <widget class="QMenu" name="editFile">
-    <property name="title">
-     <string>Редактировать</string>
-    </property>
-    <addaction name="action_2"/>
-   </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
      <string>Фильтровать</string>
     </property>
     <addaction name="filterBtn"/>
    </widget>
+   <widget class="QMenu" name="search">
+    <property name="title">
+     <string>Поиск</string>
+    </property>
+    <addaction name="searchBtn"/>
+   </widget>
    <addaction name="menu_2"/>
    <addaction name="menu"/>
    <addaction name="saveFile"/>
-   <addaction name="editFile"/>
+   <addaction name="search"/>
    <addaction name="help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -89,6 +89,11 @@
   <action name="filterBtn">
    <property name="text">
     <string>Фильтровать</string>
+   </property>
+  </action>
+  <action name="searchBtn">
+   <property name="text">
+    <string>Поиск</string>
    </property>
   </action>
  </widget>

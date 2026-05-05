@@ -49,3 +49,13 @@ vector<string> FilterViewModel::getSubjects()
 {
     return {"Математика", "Физика", "Биология", "Химия"};
 }
+
+set<string> FilterViewModel::getIncludes()
+{
+    return this->mainQuery.getIncludesSet();
+}
+
+set<string> FilterViewModel::getExcludes()
+{
+    return this->mainQuery.getExcludesSet();
+}
