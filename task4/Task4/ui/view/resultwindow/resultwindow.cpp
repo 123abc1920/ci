@@ -9,10 +9,20 @@
 
 using namespace std;
 
-ResultWindow::ResultWindow(ResultViewModel &viewModel, QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::ResultWindow), viewModel(viewModel)
+ResultWindow::ResultWindow(ResultViewModel &viewModel, Finder &finder, QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::ResultWindow), finder(finder), viewModel(viewModel)
 {
     ui->setupUi(this);
+
+    auto data = this->finder.find();
+    QStringListModel *model = new QStringListModel(this);
+    QStringList items;
+    for (auto &row : data)
+    {
+        items << QString::fromStdString(row);
+    }
+    model->setStringList(items);
+    ui->resultList->setModel(model);
 }
 
 ResultWindow::~ResultWindow()
