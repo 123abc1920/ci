@@ -9,15 +9,10 @@ class MainViewModel
 {
 private:
     FileReader fileReader;
-    InMemoryRepository repository;
-    SubjectsRepository subjectsRepository;
-    Query mainQuery;
 
 public:
-    MainViewModel(FileReader fileReader, InMemoryRepository inMemoryRepository, Query query, SubjectsRepository subjectsRepository);
+    MainViewModel(FileReader fileReader);
 
-    void readDB(string data);
-    map<int, Student> getAllStudents();
-
-    SubjectsRepository getSubjectsRepository();
+    InMemoryRepository readDB(string data);
+    SubjectsRepository readSubjects(string data);
 };

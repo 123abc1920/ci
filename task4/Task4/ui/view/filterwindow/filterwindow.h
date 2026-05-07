@@ -20,6 +20,8 @@ public:
     FilterWindow(FilterViewModel &viewModel, QMdiArea *mdiArea, QWidget *parent = nullptr);
     ~FilterWindow();
 
+    FilterViewModel &getViewModel();
+
 private:
     Ui::FilterWindow *ui;
     FilterViewModel &viewModel;

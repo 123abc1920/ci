@@ -5,6 +5,7 @@
 #include <QIODevice>
 #include <QFileDialog>
 #include <QFile>
+#include <QDebug>
 #include "StudentViewModel.h"
 #include "FilterViewModel.h"
 #include <QMdiSubWindow>
@@ -24,12 +25,13 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
             {
     auto fileContent = openFile();
     if (!fileContent.empty()) {
-        this->viewModel.readDB(fileContent);
+        InMemoryRepository inMemoryRepository=this->viewModel.readDB(fileContent);
+        SubjectsRepository subjectsRepository=this->viewModel.readSubjects(fileContent);
         
         QStringListModel* model = new QStringListModel(this);
         QStringList items;
         
-        for (auto& [index, student] : this->viewModel.getAllStudents()) {
+        for (auto& [index, student] : inMemoryRepository.getAll()) {
             QString text = QString::number(index) + "|    " + 
                         QString::fromStdString(student.getName()) + 
                         "    |" + QString::fromStdString(student.getSubjects());
@@ -38,7 +40,7 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
         
         model->setStringList(items);
 
-        StudentViewModel *viewModel = new StudentViewModel(model);
+        StudentViewModel *viewModel = new StudentViewModel(model, subjectsRepository, inMemoryRepository);
         StudentWindow *studentWin = new StudentWindow(*viewModel, this);
         QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(studentWin);
         subWindow->setWindowTitle("Список студентов");
@@ -48,22 +50,36 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
 
     connect(ui->filterBtn, &QAction::triggered, this, [this]()
             {
-        FilterViewModel *viewModel = new FilterViewModel(this->viewModel.getSubjectsRepository());
-        qDebug() << "UI:" << this->viewModel.getSubjectsRepository().getAll().size();
-        FilterWindow *filterWin = new FilterWindow(*viewModel, ui->mdiArea, this);
-        QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(filterWin);
-        subWindow->setWindowTitle("Фильтры");
-        subWindow->setAttribute(Qt::WA_DeleteOnClose);
-        subWindow->show(); });
+        QMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
+        if (activeWindow) {
+            QWidget *contentWidget = activeWindow->widget();
+            StudentWindow *studentWin = qobject_cast<StudentWindow*>(activeWindow->widget());
+    
+            if (studentWin) {
+                StudentViewModel &vm = studentWin->getViewModel();
+                FilterViewModel *viewModel = new FilterViewModel(vm.getSubjectsRepository(),vm.getInMemoryRepository());
+                FilterWindow *filterWin = new FilterWindow(*viewModel, ui->mdiArea, this);
+                QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(filterWin);
+                subWindow->setWindowTitle("Фильтры");
+                subWindow->setAttribute(Qt::WA_DeleteOnClose);
+                subWindow->show();}} });
 
     connect(ui->searchBtn, &QAction::triggered, this, [this]()
             {
-        ResultViewModel *vm = new ResultViewModel();
-        ResultWindow *win = new ResultWindow(*vm, this);
-        QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(win);
-        subWindow->setWindowTitle("Результаты");
-        subWindow->setAttribute(Qt::WA_DeleteOnClose);
-        subWindow->show(); });
+                QMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
+                if (activeWindow) {
+                    QWidget *contentWidget = activeWindow->widget();
+                    FilterWindow *filterWin = qobject_cast<FilterWindow*>(activeWindow->widget());
+            
+                    if (filterWin) {
+                        FilterViewModel &filtervm = filterWin->getViewModel();
+                        auto finder = make_shared<Finder>(filtervm.getQuery(), filtervm.getInMemoryRepository());
+                        ResultViewModel *vm = new ResultViewModel(finder);
+                        ResultWindow *win = new ResultWindow(*vm, this);
+                        QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(win);
+                        subWindow->setWindowTitle("Результаты");
+                        subWindow->setAttribute(Qt::WA_DeleteOnClose);
+                        subWindow->show(); }} });
 
     connect(ui->mdiArea, &QMdiArea::subWindowActivated,
             this, &MainWindow::updateMenuItems);

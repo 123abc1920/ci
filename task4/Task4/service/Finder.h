@@ -16,7 +16,8 @@ private:
     bool hasIncludes(Student& s);
 
 public:
-    Finder(Query &query, InMemoryRepository &inMemoryRepository);
+    Finder(const Query &query, const InMemoryRepository &inMemoryRepository);
+    ~Finder();
 
     vector<string> find();
 };

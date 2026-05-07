@@ -11,6 +11,11 @@ StudentWindow::StudentWindow(StudentViewModel &viewModel, QWidget *parent)
     ui->studentList->setModel(viewModel.getModel());
 }
 
+StudentViewModel &StudentWindow::getViewModel()
+{
+    return this->viewModel;
+}
+
 StudentWindow::~StudentWindow()
 {
     delete ui;

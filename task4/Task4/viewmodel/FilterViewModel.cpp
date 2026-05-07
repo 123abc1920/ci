@@ -1,10 +1,10 @@
 #include "FilterViewModel.h"
 #include <QDebug>
 
-FilterViewModel::FilterViewModel(const SubjectsRepository &subjectsRepository)
+FilterViewModel::FilterViewModel(SubjectsRepository &subjectsRepository, InMemoryRepository &repository)
 {
     this->subjectsRepository = subjectsRepository;
-    qDebug() << "noUI:" << this->subjectsRepository.getAll().size();
+    this->repository = repository;
 }
 
 void FilterViewModel::addToQuery(string subject, bool isExclude)
@@ -61,4 +61,19 @@ set<string> FilterViewModel::getIncludes()
 set<string> FilterViewModel::getExcludes()
 {
     return this->mainQuery.getExcludesSet();
+}
+
+SubjectsRepository FilterViewModel::getSubjectsRepository()
+{
+    return this->subjectsRepository;
+}
+
+InMemoryRepository FilterViewModel::getInMemoryRepository()
+{
+    return this->repository;
+}
+
+Query FilterViewModel::getQuery()
+{
+    return this->mainQuery;
 }

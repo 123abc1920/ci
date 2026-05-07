@@ -20,6 +20,8 @@ public:
     StudentWindow(StudentViewModel &viewModel, QWidget *parent = nullptr);
     ~StudentWindow();
 
+    StudentViewModel &getViewModel();
+
 private:
     Ui::StudentWindow *ui;
     StudentViewModel &viewModel;

@@ -1,6 +1,6 @@
 #include "Finder.h"
 
-Finder::Finder(Query &q, InMemoryRepository &repo)
+Finder::Finder(const Query &q, const InMemoryRepository &repo)
     : query(q), repository(repo)
 {
 }
@@ -40,4 +40,8 @@ vector<string> Finder::find()
     }
 
     return results;
+}
+
+Finder::~Finder()
+{
 }

@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
     Query query;
 
-    MainViewModel mainViewModel(fileReader, inMemoryRepository, query, subjectsRepository);
+    MainViewModel mainViewModel(fileReader);
     MainWindow w(mainViewModel);
     w.show();
 

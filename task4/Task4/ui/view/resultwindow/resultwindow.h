@@ -17,12 +17,10 @@ class ResultWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ResultWindow(ResultViewModel &viewModel, Finder &finder, QWidget *parent = nullptr);
+    explicit ResultWindow(ResultViewModel &viewModel, QWidget *parent = nullptr);
     ~ResultWindow();
 
 private:
     Ui::ResultWindow *ui;
     ResultViewModel &viewModel;
-
-    Finder finder;
 };

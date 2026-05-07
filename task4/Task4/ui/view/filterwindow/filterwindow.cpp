@@ -71,6 +71,11 @@ void FilterWindow::updateSubjectDataLists()
     ui->queryText->setText(QString::fromStdString(this->viewModel.getQueryText()));
 }
 
+FilterViewModel &FilterWindow::getViewModel()
+{
+    return this->viewModel;
+}
+
 FilterWindow::~FilterWindow()
 {
     delete ui;
