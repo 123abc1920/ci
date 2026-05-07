@@ -5,7 +5,11 @@
 
 using namespace std;
 
-class FileReader
+class Logger
 {
 public:
+    Logger();
+    ~Logger();
+
+    void write(const std::string &level, const std::string &message);
 };
