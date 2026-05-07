@@ -29,6 +29,12 @@ private:
     string openFile();
 
     void updateMenuItems(QMdiSubWindow *activeWindow);
+
+private slots:
+    void onOpenFileTriggered();
+    void onFilterBtnTriggered();
+    void onSearchBtnTriggered();
+    void onSaveBtnTriggered();
 };
 
 #endif

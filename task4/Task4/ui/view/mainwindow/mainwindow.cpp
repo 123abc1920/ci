@@ -20,23 +20,35 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->openFile, &QAction::triggered, this, [this]()
-            {
+    connect(ui->openFile, &QAction::triggered, this, &MainWindow::onOpenFileTriggered);
+    connect(ui->filterBtn, &QAction::triggered, this, &MainWindow::onFilterBtnTriggered);
+    connect(ui->searchBtn, &QAction::triggered, this, &MainWindow::onSearchBtnTriggered);
+    connect(ui->saveBtn, &QAction::triggered, this, &MainWindow::onSaveBtnTriggered);
+
+    connect(ui->mdiArea, &QMdiArea::subWindowActivated, this, &MainWindow::updateMenuItems);
+
+    this->updateMenuItems(nullptr);
+}
+
+void MainWindow::onOpenFileTriggered()
+{
     auto fileContent = openFile();
-    if (!fileContent.empty()) {
-        InMemoryRepository inMemoryRepository=this->viewModel.readDB(fileContent);
-        SubjectsRepository subjectsRepository=this->viewModel.readSubjects(fileContent);
-        
-        QStringListModel* model = new QStringListModel(this);
+    if (!fileContent.empty())
+    {
+        InMemoryRepository inMemoryRepository = this->viewModel.readDB(fileContent);
+        SubjectsRepository subjectsRepository = this->viewModel.readSubjects(fileContent);
+
+        QStringListModel *model = new QStringListModel(this);
         QStringList items;
-        
-        for (auto& [index, student] : inMemoryRepository.getAll()) {
-            QString text = QString::number(index) + "|    " + 
-                        QString::fromStdString(student.getName()) + 
-                        "    |" + QString::fromStdString(student.getSubjects());
+
+        for (auto &[index, student] : inMemoryRepository.getAll())
+        {
+            QString text = QString::number(index) + "|    " +
+                           QString::fromStdString(student.getName()) +
+                           "    |" + QString::fromStdString(student.getSubjects());
             items << text;
         }
-        
+
         model->setStringList(items);
 
         StudentViewModel *viewModel = new StudentViewModel(model, subjectsRepository, inMemoryRepository);
@@ -45,75 +57,79 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
         subWindow->setWindowTitle("Список студентов");
         subWindow->setAttribute(Qt::WA_DeleteOnClose);
         subWindow->show();
-    } });
+    }
+}
 
-    connect(ui->filterBtn, &QAction::triggered, this, [this]()
-            {
-        QMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
-        if (activeWindow) {
-            QWidget *contentWidget = activeWindow->widget();
-            StudentWindow *studentWin = qobject_cast<StudentWindow*>(activeWindow->widget());
-    
-            if (studentWin) {
-                StudentViewModel &vm = studentWin->getViewModel();
-                FilterViewModel *viewModel = new FilterViewModel(vm.getSubjectsRepository(),vm.getInMemoryRepository());
-                FilterWindow *filterWin = new FilterWindow(*viewModel, ui->mdiArea, this);
-                QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(filterWin);
-                subWindow->setWindowTitle("Фильтры");
-                subWindow->setAttribute(Qt::WA_DeleteOnClose);
-                subWindow->show();}} });
-
-    connect(ui->searchBtn, &QAction::triggered, this, [this]()
-            {
-                QMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
-                if (activeWindow) {
-                    QWidget *contentWidget = activeWindow->widget();
-                    FilterWindow *filterWin = qobject_cast<FilterWindow*>(activeWindow->widget());
-            
-                    if (filterWin) {
-                        FilterViewModel &filtervm = filterWin->getViewModel();
-                        auto finder = make_shared<Finder>(filtervm.getQuery(), filtervm.getInMemoryRepository());
-                        ResultViewModel *vm = new ResultViewModel(finder);
-                        ResultWindow *win = new ResultWindow(*vm, this);
-                        QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(win);
-                        subWindow->setWindowTitle("Результаты");
-                        subWindow->setAttribute(Qt::WA_DeleteOnClose);
-                        subWindow->show(); }} });
-
-    connect(ui->saveBtn, &QAction::triggered, this, [this]()
-            {
+void MainWindow::onFilterBtnTriggered()
+{
     QMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
+    if (activeWindow)
+    {
+        StudentWindow *studentWin = qobject_cast<StudentWindow *>(activeWindow->widget());
+        if (studentWin)
+        {
+            StudentViewModel &vm = studentWin->getViewModel();
+            FilterViewModel *viewModel = new FilterViewModel(vm.getSubjectsRepository(), vm.getInMemoryRepository());
+            FilterWindow *filterWin = new FilterWindow(*viewModel, ui->mdiArea, this);
+            QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(filterWin);
+            subWindow->setWindowTitle("Фильтры");
+            subWindow->setAttribute(Qt::WA_DeleteOnClose);
+            subWindow->show();
+        }
+    }
+}
 
-    if (activeWindow) {
-        ResultWindow *resultWin = qobject_cast<ResultWindow*>(activeWindow->widget());
+void MainWindow::onSearchBtnTriggered()
+{
+    QMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
+    if (activeWindow)
+    {
+        FilterWindow *filterWin = qobject_cast<FilterWindow *>(activeWindow->widget());
+        if (filterWin)
+        {
+            FilterViewModel &filtervm = filterWin->getViewModel();
+            auto finder = make_shared<Finder>(filtervm.getQuery(), filtervm.getInMemoryRepository());
+            ResultViewModel *vm = new ResultViewModel(finder);
+            ResultWindow *win = new ResultWindow(*vm, this);
+            QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(win);
+            subWindow->setWindowTitle("Результаты");
+            subWindow->setAttribute(Qt::WA_DeleteOnClose);
+            subWindow->show();
+        }
+    }
+}
 
-        if (resultWin) {
+void MainWindow::onSaveBtnTriggered()
+{
+    QMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
+    if (activeWindow)
+    {
+        ResultWindow *resultWin = qobject_cast<ResultWindow *>(activeWindow->widget());
+        if (resultWin)
+        {
             ResultViewModel &vm = resultWin->getViewModel();
             auto data = vm.find();
 
-            QString filePath = QFileDialog::getSaveFileName(this, 
-                tr("Экспорт данных"), 
-                "", 
-                tr("Текстовые файлы (*.txt);;"));
+            QString filePath = QFileDialog::getSaveFileName(this,
+                                                            tr("Экспорт данных"),
+                                                            "",
+                                                            tr("Текстовые файлы (*.txt);;"));
 
-            if (filePath.isEmpty()) {
-                return; 
-            }
+            if (filePath.isEmpty())
+                return;
 
             bool result = this->viewModel.save(data, filePath.toStdString());
 
-            if (result) {
+            if (result)
+            {
                 QMessageBox::information(this, tr("Успех"), tr("Данные успешно экспортированы!"));
-            } else {
+            }
+            else
+            {
                 QMessageBox::critical(this, tr("Ошибка"), tr("Не удалось экспортировать данные."));
             }
         }
-    } });
-
-    connect(ui->mdiArea, &QMdiArea::subWindowActivated,
-            this, &MainWindow::updateMenuItems);
-
-    this->updateMenuItems(nullptr);
+    }
 }
 
 string MainWindow::openFile()
