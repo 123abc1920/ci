@@ -3,6 +3,7 @@
 #include "MainViewModel.h"
 #include "FileReader.h"
 #include "Saver.h"
+#include "Logger.h"
 
 int main(int argc, char *argv[])
 {
@@ -10,6 +11,7 @@ int main(int argc, char *argv[])
 
     FileReader fileReader;
     Saver saver;
+    Logger logger;
 
     MainViewModel mainViewModel(fileReader, saver);
     MainWindow w(mainViewModel);

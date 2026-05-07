@@ -8,8 +8,16 @@ using namespace std;
 class Logger
 {
 public:
+    enum class Level
+    {
+        DEBUG,
+        INFO,
+        WARNING,
+        ERROR
+    };
+
     Logger();
     ~Logger();
 
-    void write(const std::string &level, const std::string &message);
+    void write(const Level &level, const string &message);
 };
