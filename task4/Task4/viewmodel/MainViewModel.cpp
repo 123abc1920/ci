@@ -1,9 +1,8 @@
 #include "MainViewModel.h"
 #include <QDebug>
 
-MainViewModel::MainViewModel(FileReader fileReader)
+MainViewModel::MainViewModel(FileReader &fileReader, Saver &saver) : fileReader(fileReader), saver(saver)
 {
-    this->fileReader = fileReader;
 }
 
 InMemoryRepository MainViewModel::readDB(string data)
@@ -20,4 +19,9 @@ SubjectsRepository MainViewModel::readSubjects(string data)
     SubjectsRepository subjectsRepository;
     subjectsRepository.setData(subjectsMap);
     return subjectsRepository;
+}
+
+bool MainViewModel::save(vector<string> data, string filePath)
+{
+    return this->saver.save(data, filePath);
 }

@@ -1,19 +1,17 @@
 #include <QApplication>
 #include "ui/view/mainwindow/mainwindow.h"
 #include "MainViewModel.h"
-#include "SubjectsRepository.h"
+#include "FileReader.h"
+#include "Saver.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
     FileReader fileReader;
-    InMemoryRepository inMemoryRepository;
-    SubjectsRepository subjectsRepository;
+    Saver saver;
 
-    Query query;
-
-    MainViewModel mainViewModel(fileReader);
+    MainViewModel mainViewModel(fileReader, saver);
     MainWindow w(mainViewModel);
     w.show();
 

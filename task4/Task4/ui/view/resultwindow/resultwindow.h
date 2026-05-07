@@ -20,6 +20,8 @@ public:
     explicit ResultWindow(ResultViewModel &viewModel, QWidget *parent = nullptr);
     ~ResultWindow();
 
+    ResultViewModel &getViewModel();
+
 private:
     Ui::ResultWindow *ui;
     ResultViewModel &viewModel;

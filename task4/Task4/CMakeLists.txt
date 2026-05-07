@@ -42,6 +42,8 @@ qt_add_executable(Task4
     service/Logger.h
     service/Finder.cpp
     service/Finder.h
+    service/Saver.cpp
+    service/Saver.h
 
     repository/InMemoryRepository.cpp
     repository/InMemoryRepository.h

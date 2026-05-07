@@ -1,18 +1,20 @@
 #pragma once
 
 #include "FileReader.h"
-#include "InMemoryRepository.h"
+#include "Saver.h"
 #include "SubjectsRepository.h"
-#include "Query.h"
+#include "InMemoryRepository.h"
 
 class MainViewModel
 {
 private:
-    FileReader fileReader;
+    FileReader &fileReader;
+    Saver &saver;
 
 public:
-    MainViewModel(FileReader fileReader);
+    MainViewModel(FileReader &fileReader, Saver &saver);
 
     InMemoryRepository readDB(string data);
     SubjectsRepository readSubjects(string data);
+    bool save(vector<string> data, string filePath);
 };

@@ -13,13 +13,12 @@
 #include "filterwindow.h"
 #include "ResultViewModel.h"
 #include "resultwindow.h"
+#include <QMessageBox>
 
 MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), viewModel(viewModel)
 {
     ui->setupUi(this);
-
-    this->viewModel = viewModel;
 
     connect(ui->openFile, &QAction::triggered, this, [this]()
             {
@@ -80,6 +79,36 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
                         subWindow->setWindowTitle("Результаты");
                         subWindow->setAttribute(Qt::WA_DeleteOnClose);
                         subWindow->show(); }} });
+
+    connect(ui->saveBtn, &QAction::triggered, this, [this]()
+            {
+    QMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
+
+    if (activeWindow) {
+        ResultWindow *resultWin = qobject_cast<ResultWindow*>(activeWindow->widget());
+
+        if (resultWin) {
+            ResultViewModel &vm = resultWin->getViewModel();
+            auto data = vm.find();
+
+            QString filePath = QFileDialog::getSaveFileName(this, 
+                tr("Экспорт данных"), 
+                "", 
+                tr("Текстовые файлы (*.txt);;"));
+
+            if (filePath.isEmpty()) {
+                return; 
+            }
+
+            bool result = this->viewModel.save(data, filePath.toStdString());
+
+            if (result) {
+                QMessageBox::information(this, tr("Успех"), tr("Данные успешно экспортированы!"));
+            } else {
+                QMessageBox::critical(this, tr("Ошибка"), tr("Не удалось экспортировать данные."));
+            }
+        }
+    } });
 
     connect(ui->mdiArea, &QMdiArea::subWindowActivated,
             this, &MainWindow::updateMenuItems);

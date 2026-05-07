@@ -25,6 +25,11 @@ ResultWindow::ResultWindow(ResultViewModel &viewModel, QWidget *parent)
     ui->resultList->setModel(model);
 }
 
+ResultViewModel &ResultWindow::getViewModel()
+{
+    return this->viewModel;
+}
+
 ResultWindow::~ResultWindow()
 {
     delete ui;
