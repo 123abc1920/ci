@@ -8,6 +8,8 @@ FilterWindow::FilterWindow(FilterViewModel &viewModel, QMdiArea *mdiArea, QWidge
 {
     ui->setupUi(this);
 
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Открыто окно фильтра");
+
     vector<string> subjects = this->viewModel.getSubjects();
     for (const auto &subject : subjects)
     {
@@ -38,6 +40,8 @@ FilterWindow::FilterWindow(FilterViewModel &viewModel, QMdiArea *mdiArea, QWidge
         string selectedText = ui->excludeList->currentIndex().data().toString().toStdString();
         this->viewModel.removeFromQuery(selectedText, true);
         updateSubjectDataLists(); });
+
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Данные ui установлены");
 }
 
 void FilterWindow::updateExcludes()
@@ -50,6 +54,8 @@ void FilterWindow::updateExcludes()
     }
     model->setStringList(items);
     ui->excludeList->setModel(model);
+
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Обновлены данные исключенных предметов");
 }
 
 void FilterWindow::updateIncludes()
@@ -62,13 +68,19 @@ void FilterWindow::updateIncludes()
     }
     model->setStringList(items);
     ui->includeList->setModel(model);
+
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Обновлены данные включенных предметов");
 }
 
 void FilterWindow::updateSubjectDataLists()
 {
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Начато обновление предметов");
+
     updateExcludes();
     updateIncludes();
     ui->queryText->setText(QString::fromStdString(this->viewModel.getQueryText()));
+
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Завершено обновление предметов");
 }
 
 FilterViewModel &FilterWindow::getViewModel()
@@ -79,4 +91,6 @@ FilterViewModel &FilterWindow::getViewModel()
 FilterWindow::~FilterWindow()
 {
     delete ui;
+
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Окно фильтров закрыто");
 }

@@ -1,6 +1,6 @@
 #include "StudentViewModel.h"
 
-StudentViewModel::StudentViewModel(QStringListModel *model, SubjectsRepository &subjectsRepository, InMemoryRepository &inMemoryRepository)
+StudentViewModel::StudentViewModel(QStringListModel *model, SubjectsRepository &subjectsRepository, InMemoryRepository &inMemoryRepository, Logger &logger) : BaseViewModel(logger)
 {
     this->model = model;
     this->inMemoryRepository = inMemoryRepository;

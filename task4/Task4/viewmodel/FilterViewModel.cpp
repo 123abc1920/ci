@@ -1,7 +1,7 @@
 #include "FilterViewModel.h"
 #include <QDebug>
 
-FilterViewModel::FilterViewModel(SubjectsRepository &subjectsRepository, InMemoryRepository &repository)
+FilterViewModel::FilterViewModel(SubjectsRepository &subjectsRepository, InMemoryRepository &repository, Logger &logger) : BaseViewModel(logger)
 {
     this->subjectsRepository = subjectsRepository;
     this->repository = repository;

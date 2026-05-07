@@ -14,11 +14,15 @@
 #include "ResultViewModel.h"
 #include "resultwindow.h"
 #include <QMessageBox>
+#include "Logger.h"
 
-MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), viewModel(viewModel)
+MainWindow::MainWindow(MainViewModel &viewModel, Logger &logger, QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::MainWindow), viewModel(viewModel), logger(logger)
 {
     ui->setupUi(this);
+
+    this->viewModel.writeLog(Logger::Level::INFO, "Сеанс начат");
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Логи пишутся в build/logs.txt");
 
     connect(ui->openFile, &QAction::triggered, this, &MainWindow::onOpenFileTriggered);
     connect(ui->filterBtn, &QAction::triggered, this, &MainWindow::onFilterBtnTriggered);
@@ -28,10 +32,12 @@ MainWindow::MainWindow(MainViewModel &viewModel, QWidget *parent)
     connect(ui->mdiArea, &QMdiArea::subWindowActivated, this, &MainWindow::updateMenuItems);
 
     this->updateMenuItems(nullptr);
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Подключены события ui");
 }
 
 void MainWindow::onOpenFileTriggered()
 {
+    this->viewModel.writeLog(Logger::Level::INFO, "Пользователь открывает файл");
     auto fileContent = openFile();
     if (!fileContent.empty())
     {
@@ -51,17 +57,24 @@ void MainWindow::onOpenFileTriggered()
 
         model->setStringList(items);
 
-        StudentViewModel *viewModel = new StudentViewModel(model, subjectsRepository, inMemoryRepository);
+        StudentViewModel *viewModel = new StudentViewModel(model, subjectsRepository, inMemoryRepository, this->logger);
         StudentWindow *studentWin = new StudentWindow(*viewModel, this);
         QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(studentWin);
         subWindow->setWindowTitle("Список студентов");
         subWindow->setAttribute(Qt::WA_DeleteOnClose);
         subWindow->show();
+
+        this->viewModel.writeLog(Logger::Level::INFO, "Данные загружены");
+    }
+    else
+    {
+        this->viewModel.writeLog(Logger::Level::ERROR, "Файл не был выбран");
     }
 }
 
 void MainWindow::onFilterBtnTriggered()
 {
+    this->viewModel.writeLog(Logger::Level::INFO, "Начата фильтрация");
     QMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
     if (activeWindow)
     {
@@ -69,18 +82,29 @@ void MainWindow::onFilterBtnTriggered()
         if (studentWin)
         {
             StudentViewModel &vm = studentWin->getViewModel();
-            FilterViewModel *viewModel = new FilterViewModel(vm.getSubjectsRepository(), vm.getInMemoryRepository());
+            FilterViewModel *viewModel = new FilterViewModel(vm.getSubjectsRepository(), vm.getInMemoryRepository(), this->logger);
             FilterWindow *filterWin = new FilterWindow(*viewModel, ui->mdiArea, this);
             QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(filterWin);
             subWindow->setWindowTitle("Фильтры");
             subWindow->setAttribute(Qt::WA_DeleteOnClose);
             subWindow->show();
+
+            this->viewModel.writeLog(Logger::Level::INFO, "Открыто окно фильрации");
         }
+        else
+        {
+            this->viewModel.writeLog(Logger::Level::ERROR, "Ошибка: выбрано не то окно");
+        }
+    }
+    else
+    {
+        this->viewModel.writeLog(Logger::Level::ERROR, "Ошибка: никакое окно не выбрано");
     }
 }
 
 void MainWindow::onSearchBtnTriggered()
 {
+    this->viewModel.writeLog(Logger::Level::INFO, "Начат поиск");
     QMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
     if (activeWindow)
     {
@@ -89,18 +113,27 @@ void MainWindow::onSearchBtnTriggered()
         {
             FilterViewModel &filtervm = filterWin->getViewModel();
             auto finder = make_shared<Finder>(filtervm.getQuery(), filtervm.getInMemoryRepository());
-            ResultViewModel *vm = new ResultViewModel(finder);
+            ResultViewModel *vm = new ResultViewModel(finder, this->logger);
             ResultWindow *win = new ResultWindow(*vm, this);
             QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(win);
             subWindow->setWindowTitle("Результаты");
             subWindow->setAttribute(Qt::WA_DeleteOnClose);
             subWindow->show();
         }
+        else
+        {
+            this->viewModel.writeLog(Logger::Level::ERROR, "Ошибка: выбрано не то окно");
+        }
+    }
+    else
+    {
+        this->viewModel.writeLog(Logger::Level::ERROR, "Ошибка: никакое окно не выбрано");
     }
 }
 
 void MainWindow::onSaveBtnTriggered()
 {
+    this->viewModel.writeLog(Logger::Level::INFO, "Начато сохранение");
     QMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
     if (activeWindow)
     {
@@ -129,11 +162,21 @@ void MainWindow::onSaveBtnTriggered()
                 QMessageBox::critical(this, tr("Ошибка"), tr("Не удалось экспортировать данные."));
             }
         }
+        else
+        {
+            this->viewModel.writeLog(Logger::Level::ERROR, "Ошибка: выбрано не то окно");
+        }
+    }
+    else
+    {
+        this->viewModel.writeLog(Logger::Level::ERROR, "Ошибка: никакое окно не выбрано");
     }
 }
 
 string MainWindow::openFile()
 {
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Открыт диалог выбора файла");
+
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Выберите файл"),
                                                     "",
@@ -141,14 +184,14 @@ string MainWindow::openFile()
 
     if (fileName.isEmpty())
     {
-        qDebug() << "Файл не выбран";
+        this->viewModel.writeLog(Logger::Level::ERROR, "Файл не выбран");
         return "";
     }
 
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        qDebug() << "Не удалось открыть файл: " << file.errorString().toStdString();
+        this->viewModel.writeLog(Logger::Level::ERROR, "Не удалось открыть файл: " + file.errorString().toStdString());
         return "";
     }
 
@@ -156,11 +199,14 @@ string MainWindow::openFile()
     QString content = in.readAll();
     file.close();
 
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Файл был выбран");
     return content.toStdString();
 }
 
 void MainWindow::updateMenuItems(QMdiSubWindow *activeWindow)
 {
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Обновлены кнопки меню");
+
     ui->openFile->setEnabled(true);
     ui->filterBtn->setEnabled(false);
     ui->saveBtn->setEnabled(false);
@@ -168,6 +214,7 @@ void MainWindow::updateMenuItems(QMdiSubWindow *activeWindow)
 
     if (!activeWindow)
     {
+        this->viewModel.writeLog(Logger::Level::WARNING, "Никакое окно не активно");
         return;
     }
 
@@ -186,9 +233,13 @@ void MainWindow::updateMenuItems(QMdiSubWindow *activeWindow)
     {
         ui->saveBtn->setEnabled(true);
     }
+
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Меню обновлено");
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+
+    this->viewModel.writeLog(Logger::Level::INFO, "Сеанс завершен");
 }

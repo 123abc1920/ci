@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
     Saver saver;
     Logger logger;
 
-    MainViewModel mainViewModel(fileReader, saver);
-    MainWindow w(mainViewModel);
+    MainViewModel mainViewModel(fileReader, saver, logger);
+    MainWindow w(mainViewModel, logger);
     w.show();
 
     return a.exec();

@@ -1,7 +1,7 @@
 #include "ResultViewModel.h"
 
-ResultViewModel::ResultViewModel(std::shared_ptr<Finder> finder)
-    : finder(std::move(finder))
+ResultViewModel::ResultViewModel(std::shared_ptr<Finder> finder, Logger &logger)
+    : BaseViewModel(logger), finder(std::move(finder))
 {
 }
 

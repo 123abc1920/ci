@@ -3,8 +3,10 @@
 #include <QStringListModel>
 #include "InMemoryRepository.h"
 #include "SubjectsRepository.h"
+#include "BaseViewModel.h"
+#include "Logger.h"
 
-class StudentViewModel
+class StudentViewModel : public BaseViewModel
 {
 private:
     QStringListModel *model;
@@ -13,7 +15,7 @@ private:
     InMemoryRepository inMemoryRepository;
 
 public:
-    StudentViewModel(QStringListModel *model, SubjectsRepository &subjectsRepository, InMemoryRepository &inMemoryRepository);
+    StudentViewModel(QStringListModel *model, SubjectsRepository &subjectsRepository, InMemoryRepository &inMemoryRepository, Logger &logger);
 
     QStringListModel *getModel();
     SubjectsRepository &getSubjectsRepository();

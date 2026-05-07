@@ -4,15 +4,17 @@
 #include "Saver.h"
 #include "SubjectsRepository.h"
 #include "InMemoryRepository.h"
+#include "Logger.h"
+#include "BaseViewModel.h"
 
-class MainViewModel
+class MainViewModel : public BaseViewModel
 {
 private:
     FileReader &fileReader;
     Saver &saver;
 
 public:
-    MainViewModel(FileReader &fileReader, Saver &saver);
+    MainViewModel(FileReader &fileReader, Saver &saver, Logger &logger);
 
     InMemoryRepository readDB(string data);
     SubjectsRepository readSubjects(string data);

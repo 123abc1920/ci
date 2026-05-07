@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMdiArea>
 #include "MainViewModel.h"
+#include "Logger.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -17,7 +18,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(MainViewModel &viewModel, QWidget *parent = nullptr);
+    MainWindow(MainViewModel &viewModel, Logger &logger, QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
@@ -25,6 +26,7 @@ private:
     QMdiArea *mdiArea;
 
     MainViewModel viewModel;
+    Logger &logger;
 
     string openFile();
 

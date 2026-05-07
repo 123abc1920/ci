@@ -1,9 +1,8 @@
 #include "MainViewModel.h"
 #include <QDebug>
 
-MainViewModel::MainViewModel(FileReader &fileReader, Saver &saver) : fileReader(fileReader), saver(saver)
-{
-}
+MainViewModel::MainViewModel(FileReader &fileReader, Saver &saver, Logger &logger)
+    : BaseViewModel(logger), fileReader(fileReader), saver(saver) {}
 
 InMemoryRepository MainViewModel::readDB(string data)
 {

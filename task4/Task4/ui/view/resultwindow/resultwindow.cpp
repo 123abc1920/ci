@@ -14,6 +14,8 @@ ResultWindow::ResultWindow(ResultViewModel &viewModel, QWidget *parent)
 {
     ui->setupUi(this);
 
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Открыто окно результатов");
+
     auto data = this->viewModel.find();
     QStringListModel *model = new QStringListModel(this);
     QStringList items;
@@ -23,6 +25,8 @@ ResultWindow::ResultWindow(ResultViewModel &viewModel, QWidget *parent)
     }
     model->setStringList(items);
     ui->resultList->setModel(model);
+
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Установлены данные в ui результата");
 }
 
 ResultViewModel &ResultWindow::getViewModel()
@@ -33,4 +37,6 @@ ResultViewModel &ResultWindow::getViewModel()
 ResultWindow::~ResultWindow()
 {
     delete ui;
+
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Окно результатов закрыто");
 }

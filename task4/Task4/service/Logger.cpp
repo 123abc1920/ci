@@ -34,8 +34,8 @@ void Logger::write(const Level &level, const string &message)
 
     if (logFile.is_open())
     {
+        logFile << std::put_time(std::localtime(&now_c), "%Y-%m-%d %H:%M:%S");
         logFile << " | " << setw(7) << levelToString(level) << " | " << message << endl;
-
         logFile.close();
     }
 }

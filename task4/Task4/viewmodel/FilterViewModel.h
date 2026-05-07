@@ -4,8 +4,10 @@
 #include <vector>
 #include "SubjectsRepository.h"
 #include "InMemoryRepository.h"
+#include "BaseViewModel.h"
+#include "Logger.h"
 
-class FilterViewModel
+class FilterViewModel : public BaseViewModel
 {
 private:
     Query mainQuery;
@@ -13,7 +15,7 @@ private:
     InMemoryRepository repository;
 
 public:
-    FilterViewModel(SubjectsRepository &subjectsRepository, InMemoryRepository &repository);
+    FilterViewModel(SubjectsRepository &subjectsRepository, InMemoryRepository &repository, Logger &logger);
 
     void addToQuery(string subject, bool isExclude);
     void removeFromQuery(string subject, bool isExclude);
