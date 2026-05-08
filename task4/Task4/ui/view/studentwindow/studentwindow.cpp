@@ -26,6 +26,6 @@ StudentWindow::~StudentWindow()
 {
     if (viewModel)
     {
-        viewModel->writeLog(Logger::Level::DEBUG, "Окно студентов закрыто");
+        viewModel->writeLog(Logger::Level::INFO, "Окно студентов закрыто");
     }
 }

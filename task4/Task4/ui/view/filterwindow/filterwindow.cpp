@@ -1,11 +1,10 @@
 #include "filterwindow.h"
 #include "ui_filterwindow.h"
 #include <QStringListModel>
-#include <QMdiSubWindow>
 
-FilterWindow::FilterWindow(FilterViewModel *viewModel, QMdiArea *mdiArea, QWidget *parent)
+FilterWindow::FilterWindow(FilterViewModel *viewModel, QWidget *parent)
     : QMainWindow(parent), ui(std::make_unique<Ui::FilterWindow>()),
-      viewModel(viewModel), mdiArea(mdiArea)
+      viewModel(viewModel)
 {
     ui->setupUi(this);
 
@@ -21,19 +20,58 @@ FilterWindow::FilterWindow(FilterViewModel *viewModel, QMdiArea *mdiArea, QWidge
         }
     }
 
-    connect(ui->addInclude, &QPushButton::clicked, [this]()
-            {
-        if (!this->viewModel) return;
-        std::string selectedText = ui->comboInclude->currentText().toStdString();
-        this->viewModel->addToQuery(selectedText, false);
-        updateSubjectDataLists(); });
+    connect(ui->addInclude, &QPushButton::clicked, this, &FilterWindow::onAddIncludeClicked);
+    connect(ui->addExclude, &QPushButton::clicked, this, &FilterWindow::onAddExcludeClicked);
+    connect(ui->removeInclude, &QPushButton::clicked, this, &FilterWindow::onRemoveIncludeClicked);
+    connect(ui->removeExclude, &QPushButton::clicked, this, &FilterWindow::onRemoveExcludeClicked);
+}
 
-    connect(ui->addExclude, &QPushButton::clicked, [this]()
-            {
-        if (!this->viewModel) return;
-        std::string selectedText = ui->comboExclude->currentText().toStdString();
-        this->viewModel->addToQuery(selectedText, true);
-        updateSubjectDataLists(); });
+void FilterWindow::onAddIncludeClicked()
+{
+    if (!viewModel)
+        return;
+    auto selectedText = ui->comboInclude->currentText().toStdString();
+    viewModel->addToQuery(selectedText, false);
+    viewModel->writeLog(Logger::Level::INFO, "Удален предмет: " + selectedText);
+    updateSubjectDataLists();
+}
+
+void FilterWindow::onAddExcludeClicked()
+{
+    if (!viewModel)
+        return;
+    auto selectedText = ui->comboExclude->currentText().toStdString();
+    viewModel->addToQuery(selectedText, true);
+    viewModel->writeLog(Logger::Level::INFO, "Включен предмет: " + selectedText);
+    updateSubjectDataLists();
+}
+
+void FilterWindow::onRemoveIncludeClicked()
+{
+    if (!viewModel)
+        return;
+    auto currentIdx = ui->includeList->currentIndex();
+    if (!currentIdx.isValid())
+        return;
+
+    auto selectedText = currentIdx.data().toString().toStdString();
+    viewModel->removeFromQuery(selectedText, false);
+    viewModel->writeLog(Logger::Level::INFO, "Удален включенный предмет: " + selectedText);
+    updateSubjectDataLists();
+}
+
+void FilterWindow::onRemoveExcludeClicked()
+{
+    if (!viewModel)
+        return;
+    auto currentIdx = ui->excludeList->currentIndex();
+    if (!currentIdx.isValid())
+        return;
+
+    auto selectedText = currentIdx.data().toString().toStdString();
+    viewModel->removeFromQuery(selectedText, true);
+    viewModel->writeLog(Logger::Level::INFO, "Удален исключенный предмет: " + selectedText);
+    updateSubjectDataLists();
 }
 
 void FilterWindow::updateExcludes()
@@ -90,6 +128,6 @@ FilterWindow::~FilterWindow()
 {
     if (viewModel)
     {
-        viewModel->writeLog(Logger::Level::DEBUG, "Окно фильтров закрыто");
+        viewModel->writeLog(Logger::Level::INFO, "Окно фильтров закрыто");
     }
 }

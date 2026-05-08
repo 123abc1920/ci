@@ -84,7 +84,7 @@ void MainWindow::onFilterBtnTriggered()
         auto *vm = studentWin->getViewModel();
 
         auto *filterVm = new FilterViewModel(vm->getSubjectsRepository(), vm->getInMemoryRepository(), logger);
-        auto *filterWin = new FilterWindow(filterVm, ui->mdiArea, this);
+        auto *filterWin = new FilterWindow(filterVm, this);
 
         auto *subWindow = ui->mdiArea->addSubWindow(filterWin);
 

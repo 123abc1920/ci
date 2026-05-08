@@ -35,6 +35,6 @@ ResultWindow::~ResultWindow()
 {
     if (viewModel)
     {
-        viewModel->writeLog(Logger::Level::DEBUG, "Окно результатов закрыто");
+        viewModel->writeLog(Logger::Level::INFO, "Окно результатов закрыто");
     }
 }

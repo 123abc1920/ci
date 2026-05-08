@@ -5,7 +5,6 @@ Finder::Finder(const Query &q, const InMemoryRepository &repo, Logger &logger)
 
 bool Finder::notHasExcludes(const Student &s) const
 {
-    this->writeLog(Logger::Level::DEBUG, "3");
     for (const auto &subject : this->query.getExcludesSet())
     {
         if (s.isLearnSubject(subject))
@@ -16,7 +15,6 @@ bool Finder::notHasExcludes(const Student &s) const
 
 bool Finder::hasIncludes(const Student &s) const
 {
-    this->writeLog(Logger::Level::DEBUG, "2");
     for (const auto &subject : this->query.getIncludesSet())
     {
         if (!s.isLearnSubject(subject))
@@ -34,7 +32,6 @@ std::vector<std::string> Finder::find() const
 
     for (const auto &[id, student] : data)
     {
-        this->writeLog(Logger::Level::DEBUG, "1");
         if (hasIncludes(student))
         {
             results.push_back(student.getName() + " " + student.getSubjects());
