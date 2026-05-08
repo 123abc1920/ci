@@ -21,24 +21,28 @@ FilterWindow::FilterWindow(FilterViewModel &viewModel, QMdiArea *mdiArea, QWidge
             {
         string selectedText = ui->comboInclude->currentText().toStdString();
         this->viewModel.addToQuery(selectedText, false);
+        this->viewModel.writeLog(Logger::Level::INFO, "Включен предмет "+selectedText);
         updateSubjectDataLists(); });
 
     connect(ui->addExclude, &QPushButton::clicked, [=]()
             {
         string selectedText = ui->comboExclude->currentText().toStdString();
         this->viewModel.addToQuery(selectedText, true);
+        this->viewModel.writeLog(Logger::Level::INFO, "Исключен предмет "+selectedText);
         updateSubjectDataLists(); });
 
     connect(ui->removeInclude, &QPushButton::clicked, [=]()
             {
         string selectedText = ui->includeList->currentIndex().data().toString().toStdString();
         this->viewModel.removeFromQuery(selectedText, false);
+        this->viewModel.writeLog(Logger::Level::INFO, "Удален включенный предмет "+selectedText);
         updateSubjectDataLists(); });
 
     connect(ui->removeExclude, &QPushButton::clicked, [=]()
             {
         string selectedText = ui->excludeList->currentIndex().data().toString().toStdString();
         this->viewModel.removeFromQuery(selectedText, true);
+        this->viewModel.writeLog(Logger::Level::INFO, "Удален исключенный предмет предмет "+selectedText);
         updateSubjectDataLists(); });
 
     this->viewModel.writeLog(Logger::Level::DEBUG, "Данные ui установлены");

@@ -68,7 +68,7 @@ void MainWindow::onOpenFileTriggered()
     }
     else
     {
-        this->viewModel.writeLog(Logger::Level::ERROR, "Файл не был выбран");
+        this->viewModel.writeLog(Logger::Level::WARNING, "Данные для загрузки не найдены");
     }
 }
 
@@ -89,7 +89,7 @@ void MainWindow::onFilterBtnTriggered()
             subWindow->setAttribute(Qt::WA_DeleteOnClose);
             subWindow->show();
 
-            this->viewModel.writeLog(Logger::Level::INFO, "Открыто окно фильрации");
+            this->viewModel.writeLog(Logger::Level::INFO, "Открыто окно фильтрации");
         }
         else
         {
@@ -184,7 +184,7 @@ string MainWindow::openFile()
 
     if (fileName.isEmpty())
     {
-        this->viewModel.writeLog(Logger::Level::ERROR, "Файл не выбран");
+        this->viewModel.writeLog(Logger::Level::WARNING, "Файл не выбран");
         return "";
     }
 
@@ -199,7 +199,7 @@ string MainWindow::openFile()
     QString content = in.readAll();
     file.close();
 
-    this->viewModel.writeLog(Logger::Level::DEBUG, "Файл был выбран");
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Файл был выбран: " + fileName.toStdString());
     return content.toStdString();
 }
 
@@ -234,7 +234,7 @@ void MainWindow::updateMenuItems(QMdiSubWindow *activeWindow)
         ui->saveBtn->setEnabled(true);
     }
 
-    this->viewModel.writeLog(Logger::Level::DEBUG, "Меню обновлено");
+    this->viewModel.writeLog(Logger::Level::DEBUG, "Меню обновлено, активно окно " + className.toStdString());
 }
 
 MainWindow::~MainWindow()
