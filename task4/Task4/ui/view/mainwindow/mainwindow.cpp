@@ -58,7 +58,7 @@ void MainWindow::onOpenFileTriggered()
         model->setStringList(items);
 
         StudentViewModel *viewModel = new StudentViewModel(model, subjectsRepository, inMemoryRepository, this->logger);
-        StudentWindow *studentWin = new StudentWindow(*viewModel, this);
+        StudentWindow *studentWin = new StudentWindow(viewModel, this);
         QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(studentWin);
         subWindow->setWindowTitle("Список студентов");
         subWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -81,8 +81,8 @@ void MainWindow::onFilterBtnTriggered()
         StudentWindow *studentWin = qobject_cast<StudentWindow *>(activeWindow->widget());
         if (studentWin)
         {
-            StudentViewModel &vm = studentWin->getViewModel();
-            FilterViewModel *viewModel = new FilterViewModel(vm.getSubjectsRepository(), vm.getInMemoryRepository(), this->logger);
+            StudentViewModel *vm = studentWin->getViewModel();
+            FilterViewModel *viewModel = new FilterViewModel(vm->getSubjectsRepository(), vm->getInMemoryRepository(), this->logger);
             FilterWindow *filterWin = new FilterWindow(viewModel, ui->mdiArea, this);
             QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(filterWin);
             subWindow->setWindowTitle("Фильтры");

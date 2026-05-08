@@ -2,7 +2,7 @@
 #define STUDENTWINDOW_H
 
 #include <QMainWindow>
-#include <QMdiArea>
+#include <memory> // Для unique_ptr
 #include "StudentViewModel.h"
 
 QT_BEGIN_NAMESPACE
@@ -17,14 +17,14 @@ class StudentWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    StudentWindow(StudentViewModel &viewModel, QWidget *parent = nullptr);
-    ~StudentWindow();
+    explicit StudentWindow(StudentViewModel *viewModel, QWidget *parent = nullptr);
+    ~StudentWindow() override;
 
-    StudentViewModel &getViewModel();
+    StudentViewModel *getViewModel() const;
 
 private:
-    Ui::StudentWindow *ui;
-    StudentViewModel &viewModel;
+    std::unique_ptr<Ui::StudentWindow> ui;
+    StudentViewModel *viewModel;
 };
 
 #endif

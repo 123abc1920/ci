@@ -1,28 +1,31 @@
 #include "studentwindow.h"
 #include "ui_studentwindow.h"
 
-StudentWindow::StudentWindow(StudentViewModel &viewModel, QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::StudentWindow), viewModel(viewModel)
+StudentWindow::StudentWindow(StudentViewModel *viewModel, QWidget *parent)
+    : QMainWindow(parent), ui(std::make_unique<Ui::StudentWindow>()),
+      viewModel(viewModel)
 {
     ui->setupUi(this);
 
-    this->viewModel.writeLog(Logger::Level::DEBUG, "Открыто окно студентов");
+    if (viewModel)
+    {
+        viewModel->writeLog(Logger::Level::DEBUG, "Открыто окно студентов");
+        
+        ui->studentList->setModel(viewModel->getModel());
 
-    this->viewModel = viewModel;
-
-    ui->studentList->setModel(viewModel.getModel());
-
-    this->viewModel.writeLog(Logger::Level::DEBUG, "Установлен список студентов в ui");
+        viewModel->writeLog(Logger::Level::DEBUG, "Установлен список студентов в ui");
+    }
 }
 
-StudentViewModel &StudentWindow::getViewModel()
+StudentViewModel *StudentWindow::getViewModel() const
 {
-    return this->viewModel;
+    return viewModel;
 }
 
 StudentWindow::~StudentWindow()
 {
-    delete ui;
-
-    this->viewModel.writeLog(Logger::Level::DEBUG, "Окно студентов закрыто");
+    if (viewModel)
+    {
+        viewModel->writeLog(Logger::Level::DEBUG, "Окно студентов закрыто");
+    }
 }
