@@ -6,9 +6,11 @@
 class ILoggable
 {
 private:
-    std::shared_ptr<Logger> logger;
+    Logger *logger;
 
 public:
-    ILoggable(Logger &logger);
-    void writeLog(const Logger::Level &level, const std::string &message);
+    explicit ILoggable(Logger &logger);
+    virtual ~ILoggable() = default;
+
+    void writeLog(const Logger::Level &level, const std::string &message) const;
 };

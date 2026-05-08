@@ -1,23 +1,20 @@
 #pragma once
 
-#include <iostream>
 #include <set>
 #include <string>
-
-using namespace std;
 
 class Student
 {
 private:
-    string name;
-    set<string> subjects;
+    std::string name;
+    std::set<std::string> subjects;
 
 public:
-    Student(const string &_name) : name(_name) {}
+    explicit Student(const std::string &_name) : name(_name) {}
 
-    string getName() const;
-    string getSubjects() const;
-    void addSubject(const string &newSubject);
-    const set<string> &getAllSubjects() const;
-    bool isLearnSubject(string subject);
+    std::string getName() const;
+    std::string getSubjects() const;
+    void addSubject(const std::string &newSubject);
+    const std::set<std::string> &getAllSubjects() const;
+    bool isLearnSubject(const std::string &subject) const;
 };

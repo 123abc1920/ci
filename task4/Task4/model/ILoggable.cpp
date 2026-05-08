@@ -1,14 +1,11 @@
 #include "ILoggable.h"
 
-ILoggable::ILoggable(Logger &logger)
-    : logger(std::shared_ptr<Logger>(std::shared_ptr<void>(), &logger))
-{
-}
+ILoggable::ILoggable(Logger &logger) : logger(&logger) {}
 
-void ILoggable::writeLog(const Logger::Level &level, const std::string &message)
+void ILoggable::writeLog(const Logger::Level &level, const std::string &message) const
 {
-    if (this->logger)
+    if (logger)
     {
-        this->logger->write(level, message);
+        logger->write(level, message);
     }
 }

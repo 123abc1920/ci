@@ -10,15 +10,15 @@
 class Finder : public ILoggable
 {
 private:
-    Query query;
-    InMemoryRepository repository;
+    const Query &query;
+    const InMemoryRepository &repository;
 
-    bool notHasExcludes(Student &s);
-    bool hasIncludes(Student &s);
+    bool notHasExcludes(const Student &s) const;
+    bool hasIncludes(const Student &s) const;
 
 public:
-    Finder(const Query &query, const InMemoryRepository &inMemoryRepository, Logger &logger);
-    ~Finder();
+    explicit Finder(const Query &q, const InMemoryRepository &repo, Logger &logger);
+    ~Finder() = default;
 
-    vector<string> find();
+    std::vector<std::string> find() const;
 };

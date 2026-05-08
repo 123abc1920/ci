@@ -27,11 +27,11 @@ std::map<int, Student> FileReader::readDB(std::string_view data)
 
 std::map<std::string, std::vector<std::string>> FileReader::parse(std::string_view data)
 {
-    std::map<std::string, std::vector<std::string>> m;
-    std::stringstream ss{std::string(data)};
+    std::map<std::string, std::vector<std::string>> result;
+    std::stringstream dataStream{std::string(data)};
     std::string line;
 
-    while (std::getline(ss, line))
+    while (std::getline(dataStream, line))
     {
         if (line.empty())
             continue;
@@ -46,11 +46,11 @@ std::map<std::string, std::vector<std::string>> FileReader::parse(std::string_vi
             std::getline(lineStream, subject);
             if (!subject.empty())
             {
-                m[name].push_back(subject);
+                result[name].push_back(subject);
             }
         }
     }
-    return m;
+    return result;
 }
 
 std::map<int, std::string> FileReader::readSubjects(std::string_view data)
@@ -60,9 +60,9 @@ std::map<int, std::string> FileReader::readSubjects(std::string_view data)
 
     writeLog(Logger::Level::DEBUG, "Начат поиск предметов");
 
-    std::stringstream ss{std::string(data)};
+    std::stringstream dataStream{std::string(data)};
     std::string line;
-    while (std::getline(ss, line))
+    while (std::getline(dataStream, line))
     {
         std::stringstream lineStream(line);
         std::string name, subject;

@@ -5,9 +5,9 @@
 
 Saver::Saver(Logger &logger) : ILoggable(logger) {}
 
-string Saver::convertToString(vector<string> data)
+std::string Saver::convertToString(std::vector<std::string> data)
 {
-    string result = "";
+    std::string result = "";
 
     for (auto &row : data)
     {
@@ -19,7 +19,7 @@ string Saver::convertToString(vector<string> data)
     return result;
 }
 
-bool Saver::save(vector<string> data, string filePath)
+bool Saver::save(std::vector<std::string> data, std::string filePath)
 {
     QFile file(QString::fromStdString(filePath));
 

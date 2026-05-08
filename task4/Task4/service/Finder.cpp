@@ -1,13 +1,11 @@
 #include "Finder.h"
 
 Finder::Finder(const Query &q, const InMemoryRepository &repo, Logger &logger)
-    : ILoggable(logger), query(q), repository(repo)
-{
-}
+    : ILoggable(logger), query(q), repository(repo) {}
 
-bool Finder::notHasExcludes(Student &s)
+bool Finder::notHasExcludes(const Student &s) const
 {
-    for (const auto &subject : query.getExcludesSet())
+    for (const auto &subject : this->query.getExcludesSet())
     {
         if (s.isLearnSubject(subject))
             return false;
@@ -15,9 +13,9 @@ bool Finder::notHasExcludes(Student &s)
     return true;
 }
 
-bool Finder::hasIncludes(Student &s)
+bool Finder::hasIncludes(const Student &s) const
 {
-    for (const auto &subject : query.getIncludesSet())
+    for (const auto &subject : this->query.getIncludesSet())
     {
         if (!s.isLearnSubject(subject))
             return false;
@@ -25,15 +23,14 @@ bool Finder::hasIncludes(Student &s)
     return notHasExcludes(s);
 }
 
-vector<string> Finder::find()
+std::vector<std::string> Finder::find() const
 {
-    vector<string> results;
-
+    std::vector<std::string> results;
     this->writeLog(Logger::Level::DEBUG, "Начат поиск в БД");
 
-    auto data = repository.getAll();
+    const auto &data = this->repository.getAll();
 
-    for (auto &[id, student] : data)
+    for (const auto &[id, student] : data)
     {
         if (hasIncludes(student))
         {
@@ -41,11 +38,6 @@ vector<string> Finder::find()
         }
     }
 
-    this->writeLog(Logger::Level::INFO, "Поиск завершен, найдено " + std::to_string(results.size()) + " студентов");
-
+    this->writeLog(Logger::Level::INFO, "Поиск завершен, найдено " + std::to_string(results.size()));
     return results;
-}
-
-Finder::~Finder()
-{
 }

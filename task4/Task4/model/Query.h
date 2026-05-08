@@ -1,24 +1,24 @@
 #pragma once
 
-#include <iostream>
 #include <set>
 #include <string>
-
-using namespace std;
 
 class Query
 {
 private:
-    set<string> includes;
-    set<string> excludes;
+    std::set<std::string> includes;
+    std::set<std::string> excludes;
 
 public:
-    void addInclude(string subject);
-    void addExclude(string subject);
-    void deleteInclude(string subject);
-    void deleteExclude(string subject);
-    string getIncludes();
-    string getExcludes();
-    set<string> getIncludesSet();
-    set<string> getExcludesSet();
+    void addInclude(const std::string &subject);
+    void addExclude(const std::string &subject);
+
+    void deleteInclude(const std::string &subject);
+    void deleteExclude(const std::string &subject);
+
+    std::string getIncludes() const;
+    std::string getExcludes() const;
+
+    const std::set<std::string> &getIncludesSet() const;
+    const std::set<std::string> &getExcludesSet() const;
 };

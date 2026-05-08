@@ -11,11 +11,11 @@
 class Saver : public ILoggable
 {
 private:
-    string convertToString(vector<string> data);
+    std::string convertToString(std::vector<std::string> data);
 
 public:
     Saver(Logger &logger);
     ~Saver();
 
-    bool save(vector<string> data, string filePath);
+    bool save(std::vector<std::string> data, std::string filePath);
 };

@@ -1,39 +1,36 @@
 #include "Student.h"
 
-string Student::getName() const
+std::string Student::getName() const
 {
     return name;
 }
 
-string Student::getSubjects() const
+std::string Student::getSubjects() const
 {
-    string result;
+    std::string result;
 
-    for (auto it = subjects.begin(); it != subjects.end(); ++it)
+    for (const auto &subject : subjects)
     {
-        if (it != subjects.begin())
+        if (!result.empty())
+        {
             result += ", ";
-        result += *it;
+        }
+        result += subject;
     }
-
     return result;
 }
-void Student::addSubject(const string &newSubject)
+
+void Student::addSubject(const std::string &newSubject)
 {
     subjects.insert(newSubject);
 }
 
-const set<string> &Student::getAllSubjects() const
+const std::set<std::string> &Student::getAllSubjects() const
 {
     return subjects;
 }
 
-bool Student::isLearnSubject(string subject)
+bool Student::isLearnSubject(const std::string &subject) const
 {
-    auto count = this->subjects.count(subject);
-    if (count > 0)
-    {
-        return true;
-    }
-    return false;
+    return subjects.count(subject) > 0;
 }

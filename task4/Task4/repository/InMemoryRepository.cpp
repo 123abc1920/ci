@@ -1,15 +1,11 @@
 #include "InMemoryRepository.h"
 
-InMemoryRepository::InMemoryRepository()
-{
-}
-
-void InMemoryRepository::setData(const map<int, Student> &data)
+void InMemoryRepository::setData(const std::map<int, Student> &data)
 {
     this->inMemoryDB = data;
 }
 
-map<int, Student> InMemoryRepository::getAll()
+const std::map<int, Student> &InMemoryRepository::getAll() const
 {
     return this->inMemoryDB;
 }

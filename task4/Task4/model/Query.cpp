@@ -1,74 +1,57 @@
 #include "Query.h"
 
-void Query::addInclude(string subject)
+void Query::addInclude(const std::string &subject)
 {
-    if (includes.count(subject) <= 0)
-    {
-        includes.insert(subject);
-    }
-    if (excludes.count(subject) > 0)
-    {
-        deleteExclude(subject);
-    }
+    includes.insert(subject);
+    excludes.erase(subject);
 }
 
-void Query::addExclude(string subject)
+void Query::addExclude(const std::string &subject)
 {
-    if (excludes.count(subject) <= 0)
-    {
-        excludes.insert(subject);
-    }
-    if (includes.count(subject) > 0)
-    {
-        deleteInclude(subject);
-    }
+    excludes.insert(subject);
+    includes.erase(subject);
 }
 
-void Query::deleteInclude(string subject)
+void Query::deleteInclude(const std::string &subject)
 {
-    while (includes.count(subject) > 0)
-    {
-        includes.erase(subject);
-    }
+    includes.erase(subject);
 }
 
-void Query::deleteExclude(string subject)
+void Query::deleteExclude(const std::string &subject)
 {
-    while (excludes.count(subject) > 0)
-    {
-        excludes.erase(subject);
-    }
+    excludes.erase(subject);
 }
 
-string Query::getIncludes()
+std::string Query::getIncludes() const
 {
-    string includes = "";
-
-    for (auto &subject : this->includes)
+    std::string result;
+    for (const auto &subject : includes)
     {
-        includes = includes + subject + ", ";
+        if (!result.empty())
+            result += ", ";
+        result += subject;
     }
-
-    return includes;
+    return result;
 }
 
-string Query::getExcludes()
+std::string Query::getExcludes() const
 {
-    string excludes = "";
-
-    for (auto &subject : this->excludes)
+    std::string result;
+    for (const auto &subject : excludes)
     {
-        excludes = excludes + subject + ", ";
+        if (!result.empty())
+            result += ", ";
+        result += subject;
     }
+    return result;
+}
 
+const std::set<std::string> &Query::getExcludesSet() const
+{
     return excludes;
 }
 
-set<string> Query::getExcludesSet()
+const std::set<std::string> &Query::getIncludesSet() const
 {
-    return this->excludes;
-}
-set<string> Query::getIncludesSet()
-{
-    return this->includes;
+    return includes;
 }
