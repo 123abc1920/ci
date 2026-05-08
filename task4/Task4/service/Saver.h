@@ -1,21 +1,19 @@
 #pragma once
 
-#include "Query.h"
-#include "InMemoryRepository.h"
 #include <vector>
 #include <string>
-#include "Student.h"
+#include <string_view>
 #include "ILoggable.h"
 #include "Logger.h"
 
 class Saver : public ILoggable
 {
 private:
-    std::string convertToString(std::vector<std::string> data);
+    std::string convertToString(const std::vector<std::string> &data) const;
 
 public:
-    Saver(Logger &logger);
-    ~Saver();
+    explicit Saver(Logger &logger);
+    ~Saver() = default;
 
-    bool save(std::vector<std::string> data, std::string filePath);
+    bool save(const std::vector<std::string> &data, std::string_view filePath) const;
 };

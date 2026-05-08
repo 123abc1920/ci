@@ -10,8 +10,8 @@
 class Finder : public ILoggable
 {
 private:
-    const Query &query;
-    const InMemoryRepository &repository;
+    Query query;
+    InMemoryRepository repository;
 
     bool notHasExcludes(const Student &s) const;
     bool hasIncludes(const Student &s) const;

@@ -1,45 +1,39 @@
 #include "Saver.h"
-#include <QStringListModel>
-#include <QIODevice>
 #include <QFile>
+#include <QTextStream>
 
 Saver::Saver(Logger &logger) : ILoggable(logger) {}
 
-std::string Saver::convertToString(std::vector<std::string> data)
+std::string Saver::convertToString(const std::vector<std::string> &data) const
 {
-    std::string result = "";
+    std::string result;
 
-    for (auto &row : data)
+    for (const auto &row : data)
     {
-        result += row + "\n";
+        result += row;
+        result += '\n';
     }
 
-    this->writeLog(Logger::Level::DEBUG, "Данные конвертированы в строку");
-
+    writeLog(Logger::Level::DEBUG, "Данные конвертированы в строку");
     return result;
 }
 
-bool Saver::save(std::vector<std::string> data, std::string filePath)
+bool Saver::save(const std::vector<std::string> &data, std::string_view filePath) const
 {
-    QFile file(QString::fromStdString(filePath));
+    QString qFilePath = QString::fromStdString(std::string(filePath));
+    QFile file(qFilePath);
 
-    this->writeLog(Logger::Level::INFO, "Выбран файл: " + filePath);
+    writeLog(Logger::Level::INFO, "Попытка сохранения в файл: " + std::string(filePath));
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        this->writeLog(Logger::Level::ERROR, "Не удается открыть файл");
+        writeLog(Logger::Level::ERROR, "Не удается открыть файл для записи");
         return false;
     }
 
     QTextStream out(&file);
+    out << QString::fromStdString(convertToString(data));
 
-    QString dataToSave = QString::fromStdString(this->convertToString(data));
-    out << dataToSave;
-
-    this->writeLog(Logger::Level::INFO, "Сохранено в файл " + filePath);
-
-    file.close();
+    writeLog(Logger::Level::INFO, "Успешно сохранено в файл");
     return true;
 }
-
-Saver::~Saver() {}
