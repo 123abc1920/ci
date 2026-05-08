@@ -4,17 +4,16 @@
 #include <QMdiSubWindow>
 
 FilterWindow::FilterWindow(FilterViewModel *viewModel, QMdiArea *mdiArea, QWidget *parent)
-    : QMainWindow(parent), ui(std::make_unique<Ui::FilterWindow>())
-      ,
-      m_viewModel(viewModel), m_mdiArea(mdiArea)
+    : QMainWindow(parent), ui(std::make_unique<Ui::FilterWindow>()),
+      viewModel(viewModel), mdiArea(mdiArea)
 {
     ui->setupUi(this);
 
-    if (m_viewModel)
+    if (this->viewModel)
     {
-        m_viewModel->writeLog(Logger::Level::DEBUG, "Открыто окно фильтра");
+        this->viewModel->writeLog(Logger::Level::DEBUG, "Открыто окно фильтра");
 
-        const auto &subjects = m_viewModel->getSubjects();
+        const auto &subjects = this->viewModel->getSubjects();
         for (const auto &subject : subjects)
         {
             ui->comboInclude->addItem(QString::fromStdString(subject));
@@ -24,26 +23,26 @@ FilterWindow::FilterWindow(FilterViewModel *viewModel, QMdiArea *mdiArea, QWidge
 
     connect(ui->addInclude, &QPushButton::clicked, [this]()
             {
-        if (!m_viewModel) return;
+        if (!this->viewModel) return;
         std::string selectedText = ui->comboInclude->currentText().toStdString();
-        m_viewModel->addToQuery(selectedText, false);
+        this->viewModel->addToQuery(selectedText, false);
         updateSubjectDataLists(); });
 
     connect(ui->addExclude, &QPushButton::clicked, [this]()
             {
-        if (!m_viewModel) return;
+        if (!this->viewModel) return;
         std::string selectedText = ui->comboExclude->currentText().toStdString();
-        m_viewModel->addToQuery(selectedText, true);
+        this->viewModel->addToQuery(selectedText, true);
         updateSubjectDataLists(); });
 }
 
 void FilterWindow::updateExcludes()
 {
-    if (!m_viewModel)
+    if (!viewModel)
         return;
     auto *model = new QStringListModel(this);
     QStringList items;
-    for (const auto &subject : m_viewModel->getQueryData(true))
+    for (const auto &subject : viewModel->getQueryData(true))
     {
         items << QString::fromStdString(subject);
     }
@@ -57,11 +56,11 @@ void FilterWindow::updateExcludes()
 
 void FilterWindow::updateIncludes()
 {
-    if (!m_viewModel)
+    if (!viewModel)
         return;
     auto *model = new QStringListModel(this);
     QStringList items;
-    for (const auto &subject : m_viewModel->getQueryData(false))
+    for (const auto &subject : viewModel->getQueryData(false))
     {
         items << QString::fromStdString(subject);
     }
@@ -75,22 +74,22 @@ void FilterWindow::updateIncludes()
 
 void FilterWindow::updateSubjectDataLists()
 {
-    if (!m_viewModel)
+    if (!viewModel)
         return;
     updateExcludes();
     updateIncludes();
-    ui->queryText->setText(QString::fromStdString(m_viewModel->getQueryText()));
+    ui->queryText->setText(QString::fromStdString(viewModel->getQueryText()));
 }
 
 FilterViewModel *FilterWindow::getViewModel() const
 {
-    return m_viewModel;
+    return viewModel;
 }
 
 FilterWindow::~FilterWindow()
 {
-    if (m_viewModel)
+    if (viewModel)
     {
-        m_viewModel->writeLog(Logger::Level::DEBUG, "Окно фильтров закрыто");
+        viewModel->writeLog(Logger::Level::DEBUG, "Окно фильтров закрыто");
     }
 }

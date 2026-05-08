@@ -114,7 +114,7 @@ void MainWindow::onSearchBtnTriggered()
             FilterViewModel *filtervm = filterWin->getViewModel();
             auto finder = make_shared<Finder>(filtervm->getQuery(), filtervm->getInMemoryRepository(), this->logger);
             ResultViewModel *vm = new ResultViewModel(finder, this->logger);
-            ResultWindow *win = new ResultWindow(*vm, this);
+            ResultWindow *win = new ResultWindow(vm, this);
             QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(win);
             subWindow->setWindowTitle("Результаты");
             subWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -140,8 +140,8 @@ void MainWindow::onSaveBtnTriggered()
         ResultWindow *resultWin = qobject_cast<ResultWindow *>(activeWindow->widget());
         if (resultWin)
         {
-            ResultViewModel &vm = resultWin->getViewModel();
-            auto data = vm.getResult();
+            ResultViewModel *vm = resultWin->getViewModel();
+            auto data = vm->getResult();
 
             QString filePath = QFileDialog::getSaveFileName(this,
                                                             tr("Экспорт данных"),

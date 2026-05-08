@@ -26,8 +26,8 @@ public:
 private:
     std::unique_ptr<Ui::FilterWindow> ui;
 
-    FilterViewModel *m_viewModel;
-    QMdiArea *m_mdiArea;
+    FilterViewModel *viewModel;
+    QMdiArea *mdiArea;
 
     void updateExcludes();
     void updateIncludes();

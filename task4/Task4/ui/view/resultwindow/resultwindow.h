@@ -1,9 +1,8 @@
 #pragma once
 
 #include <QMainWindow>
-#include <QMdiArea>
+#include <memory>
 #include "ResultViewModel.h"
-#include "Finder.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -17,12 +16,12 @@ class ResultWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ResultWindow(ResultViewModel &viewModel, QWidget *parent = nullptr);
-    ~ResultWindow();
+    explicit ResultWindow(ResultViewModel *viewModel, QWidget *parent = nullptr);
+    ~ResultWindow() override;
 
-    ResultViewModel &getViewModel();
+    ResultViewModel *getViewModel() const;
 
 private:
-    Ui::ResultWindow *ui;
-    ResultViewModel &viewModel;
+    std::unique_ptr<Ui::ResultWindow> ui;
+    ResultViewModel *viewModel;
 };
