@@ -31,10 +31,36 @@ void FilterViewModel::removeFromQuery(const std::string &subject, bool isExclude
     }
 }
 
+#include <sstream>
+
 std::string FilterViewModel::getQueryText() const
 {
-    return "Выбрать студентов, которые изучают " + query.getIncludes() +
-           " но не изучают " + query.getExcludes();
+    auto includes = query.getIncludes();
+    auto excludes = query.getExcludes();
+
+    if (includes.empty() && excludes.empty())
+    {
+        return "Фильтры не заданы (выбраны все студенты)";
+    }
+
+    std::ostringstream oss;
+    oss << "Выбрать студентов";
+
+    if (!includes.empty())
+    {
+        oss << ", которые изучают " << includes;
+    }
+
+    if (!excludes.empty())
+    {
+        if (!includes.empty())
+        {
+            oss << ", но";
+        }
+        oss << " не изучают " << excludes;
+    }
+
+    return oss.str();
 }
 
 const std::set<std::string> &FilterViewModel::getQueryData(bool isExclude) const
