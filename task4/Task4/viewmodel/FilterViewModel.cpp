@@ -1,79 +1,58 @@
 #include "FilterViewModel.h"
-#include <QDebug>
 
-FilterViewModel::FilterViewModel(SubjectsRepository &subjectsRepository, InMemoryRepository &repository, Logger &logger) : ILoggable(logger)
+FilterViewModel::FilterViewModel(const SubjectsRepository &subjectsRepo,
+                                 const InMemoryRepository &repo,
+                                 Logger &logger)
+    : ILoggable(logger), subjectsRepo(subjectsRepo), repository(repo)
 {
-    this->subjectsRepository = subjectsRepository;
-    this->repository = repository;
 }
 
-void FilterViewModel::addToQuery(string subject, bool isExclude)
+void FilterViewModel::addToQuery(const std::string &subject, bool isExclude)
 {
-    if (isExclude == true)
+    if (isExclude)
     {
-        this->mainQuery.addExclude(subject);
+        query.addExclude(subject);
     }
     else
     {
-        this->mainQuery.addInclude(subject);
+        query.addInclude(subject);
     }
 }
 
-void FilterViewModel::removeFromQuery(string subject, bool isExclude)
+void FilterViewModel::removeFromQuery(const std::string &subject, bool isExclude)
 {
-    if (isExclude == true)
+    if (isExclude)
     {
-        this->mainQuery.deleteExclude(subject);
+        query.deleteExclude(subject);
     }
     else
     {
-        this->mainQuery.deleteInclude(subject);
+        query.deleteInclude(subject);
     }
 }
 
-string FilterViewModel::getQueryText()
+std::string FilterViewModel::getQueryText() const
 {
-    return "Выбрать студентов, которые изучают " + this->mainQuery.getIncludes() + "но не изучают " + this->mainQuery.getExcludes();
+    return "Выбрать студентов, которые изучают " + query.getIncludes() +
+           " но не изучают " + query.getExcludes();
 }
 
-set<string> FilterViewModel::getQueryData(bool isExclude)
+const std::set<std::string> &FilterViewModel::getQueryData(bool isExclude) const
 {
-    if (isExclude == true)
-    {
-        return this->mainQuery.getExcludesSet();
-    }
-    else
-    {
-        return this->mainQuery.getIncludesSet();
-    }
+    return isExclude ? query.getExcludesSet() : query.getIncludesSet();
 }
 
-vector<string> FilterViewModel::getSubjects()
+std::vector<std::string> FilterViewModel::getSubjects() const
 {
-    return this->subjectsRepository.getAll();
+    return subjectsRepo.getAll();
 }
 
-set<string> FilterViewModel::getIncludes()
+const std::set<std::string> &FilterViewModel::getIncludes() const
 {
-    return this->mainQuery.getIncludesSet();
+    return query.getIncludesSet();
 }
 
-set<string> FilterViewModel::getExcludes()
+const std::set<std::string> &FilterViewModel::getExcludes() const
 {
-    return this->mainQuery.getExcludesSet();
-}
-
-SubjectsRepository FilterViewModel::getSubjectsRepository()
-{
-    return this->subjectsRepository;
-}
-
-InMemoryRepository FilterViewModel::getInMemoryRepository()
-{
-    return this->repository;
-}
-
-Query FilterViewModel::getQuery()
-{
-    return this->mainQuery;
+    return query.getExcludesSet();
 }

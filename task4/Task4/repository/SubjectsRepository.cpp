@@ -1,20 +1,21 @@
 #include "SubjectsRepository.h"
-#include <QDebug>
+#include <algorithm>
+#include <iterator>
 
-SubjectsRepository::SubjectsRepository() {}
-
-void SubjectsRepository::setData(const map<int, string> &data)
+void SubjectsRepository::setData(const std::map<int, std::string> &data)
 {
-    this->inMemoryDB = data;
+    database = data;
 }
 
-vector<string> SubjectsRepository::getAll()
+std::vector<std::string> SubjectsRepository::getAll() const
 {
-    vector<string> result;
+    std::vector<std::string> result;
 
-    for (const auto &pair : inMemoryDB)
+    result.reserve(database.size());
+
+    for (const auto &[id, name] : database)
     {
-        result.push_back(pair.second);
+        result.push_back(name);
     }
 
     return result;

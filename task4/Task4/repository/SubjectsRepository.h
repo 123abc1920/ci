@@ -1,20 +1,20 @@
 #pragma once
 
-#include <iostream>
 #include <string>
 #include <map>
 #include <vector>
 
-using namespace std;
-
 class SubjectsRepository
 {
 private:
-    map<int, string> inMemoryDB;
+    std::map<int, std::string> database;
 
 public:
-    SubjectsRepository();
+    SubjectsRepository() = default;
 
-    void setData(const map<int, string> &data);
-    vector<string> getAll();
+    void setData(const std::map<int, std::string> &data);
+
+    std::vector<std::string> getAll() const;
+
+    bool empty() const { return database.empty(); }
 };

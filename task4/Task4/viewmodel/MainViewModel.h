@@ -16,7 +16,7 @@ private:
 public:
     MainViewModel(FileReader &fileReader, Saver &saver, Logger &logger);
 
-    InMemoryRepository readDB(string data);
-    SubjectsRepository readSubjects(string data);
-    bool save(vector<string> data, string filePath);
+    InMemoryRepository readDB(std::string data);
+    SubjectsRepository readSubjects(std::string data);
+    bool save(std::vector<std::string> data, std::string filePath);
 };

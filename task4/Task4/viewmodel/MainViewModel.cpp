@@ -4,7 +4,7 @@
 MainViewModel::MainViewModel(FileReader &fileReader, Saver &saver, Logger &logger)
     : ILoggable(logger), fileReader(fileReader), saver(saver) {}
 
-InMemoryRepository MainViewModel::readDB(string data)
+InMemoryRepository MainViewModel::readDB(std::string data)
 {
     auto dataMap = this->fileReader.readDB(data);
     InMemoryRepository repository;
@@ -12,7 +12,7 @@ InMemoryRepository MainViewModel::readDB(string data)
     return repository;
 }
 
-SubjectsRepository MainViewModel::readSubjects(string data)
+SubjectsRepository MainViewModel::readSubjects(std::string data)
 {
     auto subjectsMap = this->fileReader.readSubjects(data);
     SubjectsRepository subjectsRepository;
@@ -20,7 +20,7 @@ SubjectsRepository MainViewModel::readSubjects(string data)
     return subjectsRepository;
 }
 
-bool MainViewModel::save(vector<string> data, string filePath)
+bool MainViewModel::save(std::vector<std::string> data, std::string filePath)
 {
     return this->saver.save(data, filePath);
 }
