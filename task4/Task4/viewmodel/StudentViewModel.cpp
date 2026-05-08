@@ -1,23 +1,24 @@
 #include "StudentViewModel.h"
 
-StudentViewModel::StudentViewModel(QStringListModel *model, SubjectsRepository &subjectsRepository, InMemoryRepository &inMemoryRepository, Logger &logger) : ILoggable(logger)
+StudentViewModel::StudentViewModel(QStringListModel *model,
+                                   const SubjectsRepository &subjectsRepository,
+                                   const InMemoryRepository &inMemoryRepository,
+                                   Logger &logger)
+    : ILoggable(logger), model(model), subjectsRepository(subjectsRepository), inMemoryRepository(inMemoryRepository)
 {
-    this->model = model;
-    this->inMemoryRepository = inMemoryRepository;
-    this->subjectsRepository = subjectsRepository;
 }
 
 QStringListModel *StudentViewModel::getModel()
 {
-    return this->model;
+    return model;
 }
 
 SubjectsRepository &StudentViewModel::getSubjectsRepository()
 {
-    return this->subjectsRepository;
+    return subjectsRepository;
 }
 
 InMemoryRepository &StudentViewModel::getInMemoryRepository()
 {
-    return this->inMemoryRepository;
+    return inMemoryRepository;
 }
