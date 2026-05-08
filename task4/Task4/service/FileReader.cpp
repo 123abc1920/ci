@@ -24,7 +24,7 @@ map<int, Student> FileReader::readDB(string data)
         i++;
     }
 
-    this->writeLog(Logger::Level::DEBUG, "Файл считан, строк " + std::to_string(result.size()));
+    this->writeLog(Logger::Level::INFO, "Файл считан, студентов " + std::to_string(result.size()));
 
     return result;
 }

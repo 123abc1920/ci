@@ -141,7 +141,7 @@ void MainWindow::onSaveBtnTriggered()
         if (resultWin)
         {
             ResultViewModel &vm = resultWin->getViewModel();
-            auto data = vm.find();
+            auto data = vm.getResult();
 
             QString filePath = QFileDialog::getSaveFileName(this,
                                                             tr("Экспорт данных"),
