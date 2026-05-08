@@ -1,9 +1,7 @@
 #pragma once
-
-#include <iostream>
 #include <string>
-
-using namespace std;
+#include <fstream>
+#include <string_view>
 
 class Logger
 {
@@ -16,8 +14,11 @@ public:
         ERROR
     };
 
-    Logger();
-    ~Logger();
+    explicit Logger(const std::string &filename = "logs.txt");
 
-    void write(const Level &level, const string &message);
+    void write(Level level, std::string_view message);
+
+private:
+    std::ofstream logFile;
+    std::string_view levelToString(Level level);
 };
