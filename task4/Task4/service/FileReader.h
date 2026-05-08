@@ -1,23 +1,21 @@
 #pragma once
 
-#include <iostream>
-#include <string>
 #include <map>
 #include <vector>
+#include <string>
+#include <string_view>
 #include "Student.h"
 #include "ILoggable.h"
-
-using namespace std;
 
 class FileReader : public ILoggable
 {
 private:
-    map<string, vector<string>> parse(const string &data);
+    std::map<std::string, std::vector<std::string>> parse(std::string_view data);
 
 public:
-    FileReader(Logger &logger);
-    ~FileReader();
+    explicit FileReader(Logger &logger);
+    ~FileReader() = default;
 
-    map<int, Student> readDB(string data);
-    map<int, string> readSubjects(string data);
+    std::map<int, Student> readDB(std::string_view data);
+    std::map<int, std::string> readSubjects(std::string_view data);
 };

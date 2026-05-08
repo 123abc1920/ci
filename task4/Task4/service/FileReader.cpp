@@ -1,114 +1,88 @@
 #include "FileReader.h"
-#include <QDebug>
+#include <sstream>
 
 FileReader::FileReader(Logger &logger) : ILoggable(logger) {}
 
-FileReader::~FileReader() {};
-
-map<int, Student> FileReader::readDB(string data)
+std::map<int, Student> FileReader::readDB(std::string_view data)
 {
-    map<int, Student> result;
+    std::map<int, Student> result;
+    writeLog(Logger::Level::DEBUG, "Начато чтение файла");
 
-    this->writeLog(Logger::Level::DEBUG, "Начато чтение файла");
+    auto parsedData = parse(data);
+    int id = 0;
 
-    auto strs = parse(data);
-    int i = 0;
-    for (auto &[name, subjects] : strs)
+    for (auto &[name, subjects] : parsedData)
     {
         Student s(name);
-        for (auto &subject : subjects)
+        for (const auto &subject : subjects)
         {
             s.addSubject(subject);
         }
-        result.insert({i, s});
-        i++;
+        result.emplace(id++, std::move(s));
     }
 
-    this->writeLog(Logger::Level::INFO, "Файл считан, студентов " + std::to_string(result.size()));
-
+    writeLog(Logger::Level::INFO, "Файл считан, студентов " + std::to_string(result.size()));
     return result;
 }
 
-map<string, vector<string>> FileReader::parse(const string &data)
+std::map<std::string, std::vector<std::string>> FileReader::parse(std::string_view data)
 {
-    map<string, vector<string>> m;
+    std::map<std::string, std::vector<std::string>> m;
+    std::stringstream ss{std::string(data)};
+    std::string line;
 
-    int i = 0;
-    while (i < data.size())
+    while (std::getline(ss, line))
     {
-        while (i < data.size() && (data[i] == '\n' || data[i] == '\r'))
-            i++;
-        if (i >= data.size())
-            break;
+        if (line.empty())
+            continue;
 
-        string name;
-        while (i < data.size() && data[i] != ' ' && data[i] != '\t' && data[i] != '\n')
+        std::stringstream lineStream(line);
+        std::string name;
+        std::string subject;
+
+        if (lineStream >> name)
         {
-            name += data[i++];
-        }
-
-        while (i < data.size() && (data[i] == ' ' || data[i] == '\t'))
-            i++;
-
-        string subj;
-        while (i < data.size() && data[i] != '\n' && data[i] != '\r')
-        {
-            subj += data[i++];
-        }
-
-        if (!name.empty() && !subj.empty())
-        {
-            m[name].push_back(subj);
+            lineStream >> std::ws;
+            std::getline(lineStream, subject);
+            if (!subject.empty())
+            {
+                m[name].push_back(subject);
+            }
         }
     }
-
     return m;
 }
 
-map<int, string> FileReader::readSubjects(string data)
+std::map<int, std::string> FileReader::readSubjects(std::string_view data)
 {
-    map<int, string> result;
-    set<string> preResult;
+    std::map<int, std::string> result;
+    std::set<std::string> subjects;
 
-    this->writeLog(Logger::Level::DEBUG, "Начат поиск предметов");
+    writeLog(Logger::Level::DEBUG, "Начат поиск предметов");
 
-    int pos = 0;
-    while (pos < data.length())
+    std::stringstream ss{std::string(data)};
+    std::string line;
+    while (std::getline(ss, line))
     {
-        size_t nameEnd = data.find_first_of(" \t\n", pos);
-        if (nameEnd == string::npos)
-            break;
-
-        size_t subjectStart = data.find_first_not_of(" \t", nameEnd);
-        if (subjectStart == string::npos)
-            break;
-
-        size_t subjectEnd = data.find('\n', subjectStart);
-        if (subjectEnd == string::npos)
-            subjectEnd = data.length();
-
-        string subject = data.substr(subjectStart, subjectEnd - subjectStart);
-
-        while (!subject.empty() && isspace(subject.back()))
+        std::stringstream lineStream(line);
+        std::string name, subject;
+        if (lineStream >> name)
         {
-            subject.pop_back();
+            lineStream >> std::ws;
+            std::getline(lineStream, subject);
+            if (!subject.empty())
+            {
+                subjects.insert(subject);
+            }
         }
-
-        if (!subject.empty())
-        {
-            preResult.insert(subject);
-        }
-
-        pos = subjectEnd + 1;
     }
 
-    int i = 0;
-    for (const auto &subject : preResult)
+    int id = 0;
+    for (auto &sub : subjects)
     {
-        result.insert({i++, subject});
+        result.emplace(id++, sub);
     }
 
-    this->writeLog(Logger::Level::INFO, "Найдено " + std::to_string(result.size()) + " предметов");
-
+    writeLog(Logger::Level::INFO, "Найдено " + std::to_string(result.size()) + " предметов");
     return result;
 }
