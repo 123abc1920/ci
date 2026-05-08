@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMdiArea>
+#include <memory>
 #include "MainViewModel.h"
 #include "Logger.h"
 
@@ -18,18 +19,16 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(MainViewModel &viewModel, Logger &logger, QWidget *parent = nullptr);
+    explicit MainWindow(MainViewModel &viewModel, Logger &logger, QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-    QMdiArea *mdiArea;
+    std::unique_ptr<Ui::MainWindow> ui;
 
-    MainViewModel viewModel;
+    MainViewModel &viewModel;
     Logger &logger;
 
-    string openFile();
-
+    std::string openFile();
     void updateMenuItems(QMdiSubWindow *activeWindow);
 
 private slots:
@@ -38,5 +37,4 @@ private slots:
     void onSearchBtnTriggered();
     void onSaveBtnTriggered();
 };
-
 #endif
