@@ -83,7 +83,7 @@ void MainWindow::onFilterBtnTriggered()
         {
             StudentViewModel &vm = studentWin->getViewModel();
             FilterViewModel *viewModel = new FilterViewModel(vm.getSubjectsRepository(), vm.getInMemoryRepository(), this->logger);
-            FilterWindow *filterWin = new FilterWindow(*viewModel, ui->mdiArea, this);
+            FilterWindow *filterWin = new FilterWindow(viewModel, ui->mdiArea, this);
             QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(filterWin);
             subWindow->setWindowTitle("Фильтры");
             subWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -111,8 +111,8 @@ void MainWindow::onSearchBtnTriggered()
         FilterWindow *filterWin = qobject_cast<FilterWindow *>(activeWindow->widget());
         if (filterWin)
         {
-            FilterViewModel &filtervm = filterWin->getViewModel();
-            auto finder = make_shared<Finder>(filtervm.getQuery(), filtervm.getInMemoryRepository(), this->logger);
+            FilterViewModel *filtervm = filterWin->getViewModel();
+            auto finder = make_shared<Finder>(filtervm->getQuery(), filtervm->getInMemoryRepository(), this->logger);
             ResultViewModel *vm = new ResultViewModel(finder, this->logger);
             ResultWindow *win = new ResultWindow(*vm, this);
             QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(win);

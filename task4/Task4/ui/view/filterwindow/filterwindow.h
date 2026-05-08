@@ -2,8 +2,9 @@
 #define FILTERWINDOW_H
 
 #include <QMainWindow>
-#include "FilterViewModel.h"
 #include <QMdiArea>
+#include <memory>
+#include "FilterViewModel.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -17,15 +18,16 @@ class FilterWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    FilterWindow(FilterViewModel &viewModel, QMdiArea *mdiArea, QWidget *parent = nullptr);
-    ~FilterWindow();
+    explicit FilterWindow(FilterViewModel *viewModel, QMdiArea *mdiArea, QWidget *parent = nullptr);
+    ~FilterWindow() override;
 
-    FilterViewModel &getViewModel();
+    FilterViewModel *getViewModel() const;
 
 private:
-    Ui::FilterWindow *ui;
-    FilterViewModel &viewModel;
-    QMdiArea *mdiArea;
+    std::unique_ptr<Ui::FilterWindow> ui;
+
+    FilterViewModel *m_viewModel;
+    QMdiArea *m_mdiArea;
 
     void updateExcludes();
     void updateIncludes();
