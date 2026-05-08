@@ -1,7 +1,7 @@
 #include "Finder.h"
 
-Finder::Finder(const Query &q, const InMemoryRepository &repo)
-    : query(q), repository(repo)
+Finder::Finder(const Query &q, const InMemoryRepository &repo, Logger &logger)
+    : ILoggable(logger), query(q), repository(repo)
 {
 }
 
@@ -29,6 +29,8 @@ vector<string> Finder::find()
 {
     vector<string> results;
 
+    this->writeLog(Logger::Level::DEBUG, "Начат поиск в БД");
+
     auto data = repository.getAll();
 
     for (auto &[id, student] : data)
@@ -38,6 +40,8 @@ vector<string> Finder::find()
             results.push_back(student.getName() + " " + student.getSubjects());
         }
     }
+
+    this->writeLog(Logger::Level::INFO, "Поиск завершен, найдено " + std::to_string(results.size()) + " студентов");
 
     return results;
 }

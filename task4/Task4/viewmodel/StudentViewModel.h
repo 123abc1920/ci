@@ -3,10 +3,10 @@
 #include <QStringListModel>
 #include "InMemoryRepository.h"
 #include "SubjectsRepository.h"
-#include "BaseViewModel.h"
+#include "ILoggable.h"
 #include "Logger.h"
 
-class StudentViewModel : public BaseViewModel
+class StudentViewModel : public ILoggable
 {
 private:
     QStringListModel *model;

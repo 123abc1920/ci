@@ -3,9 +3,9 @@
 #include "Finder.h"
 #include <memory>
 #include "Logger.h"
-#include "BaseViewModel.h"
+#include "ILoggable.h"
 
-class ResultViewModel : public BaseViewModel
+class ResultViewModel : public ILoggable
 {
 private:
     std::shared_ptr<Finder> finder;

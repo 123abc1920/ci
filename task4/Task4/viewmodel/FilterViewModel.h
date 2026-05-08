@@ -4,10 +4,10 @@
 #include <vector>
 #include "SubjectsRepository.h"
 #include "InMemoryRepository.h"
-#include "BaseViewModel.h"
+#include "ILoggable.h"
 #include "Logger.h"
 
-class FilterViewModel : public BaseViewModel
+class FilterViewModel : public ILoggable
 {
 private:
     Query mainQuery;

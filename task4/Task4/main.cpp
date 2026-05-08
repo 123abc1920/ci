@@ -9,9 +9,9 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    FileReader fileReader;
-    Saver saver;
     Logger logger;
+    FileReader fileReader(logger);
+    Saver saver(logger);
 
     MainViewModel mainViewModel(fileReader, saver, logger);
     MainWindow w(mainViewModel, logger);

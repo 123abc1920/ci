@@ -2,7 +2,7 @@
 #include <QDebug>
 
 MainViewModel::MainViewModel(FileReader &fileReader, Saver &saver, Logger &logger)
-    : BaseViewModel(logger), fileReader(fileReader), saver(saver) {}
+    : ILoggable(logger), fileReader(fileReader), saver(saver) {}
 
 InMemoryRepository MainViewModel::readDB(string data)
 {

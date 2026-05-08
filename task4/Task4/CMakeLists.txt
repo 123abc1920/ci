@@ -54,6 +54,8 @@ qt_add_executable(Task4
     model/Student.cpp
     model/Query.cpp
     model/Query.h
+    model/ILoggable.cpp
+    model/ILoggable.h
 )
 
 target_include_directories(Task4 PRIVATE

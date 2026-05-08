@@ -1,9 +1,15 @@
 #include "FileReader.h"
 #include <QDebug>
 
+FileReader::FileReader(Logger &logger) : ILoggable(logger) {}
+
+FileReader::~FileReader() {};
+
 map<int, Student> FileReader::readDB(string data)
 {
     map<int, Student> result;
+
+    this->writeLog(Logger::Level::DEBUG, "Начато чтение файла");
 
     auto strs = parse(data);
     int i = 0;
@@ -17,6 +23,8 @@ map<int, Student> FileReader::readDB(string data)
         result.insert({i, s});
         i++;
     }
+
+    this->writeLog(Logger::Level::DEBUG, "Файл считан, строк " + std::to_string(result.size()));
 
     return result;
 }
@@ -62,6 +70,8 @@ map<int, string> FileReader::readSubjects(string data)
     map<int, string> result;
     set<string> preResult;
 
+    this->writeLog(Logger::Level::DEBUG, "Начат поиск предметов");
+
     int pos = 0;
     while (pos < data.length())
     {
@@ -97,6 +107,8 @@ map<int, string> FileReader::readSubjects(string data)
     {
         result.insert({i++, subject});
     }
+
+    this->writeLog(Logger::Level::INFO, "Найдено " + std::to_string(result.size()) + " предметов");
 
     return result;
 }

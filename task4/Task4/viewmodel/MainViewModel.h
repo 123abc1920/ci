@@ -5,9 +5,9 @@
 #include "SubjectsRepository.h"
 #include "InMemoryRepository.h"
 #include "Logger.h"
-#include "BaseViewModel.h"
+#include "ILoggable.h"
 
-class MainViewModel : public BaseViewModel
+class MainViewModel : public ILoggable
 {
 private:
     FileReader &fileReader;

@@ -112,7 +112,7 @@ void MainWindow::onSearchBtnTriggered()
         if (filterWin)
         {
             FilterViewModel &filtervm = filterWin->getViewModel();
-            auto finder = make_shared<Finder>(filtervm.getQuery(), filtervm.getInMemoryRepository());
+            auto finder = make_shared<Finder>(filtervm.getQuery(), filtervm.getInMemoryRepository(), this->logger);
             ResultViewModel *vm = new ResultViewModel(finder, this->logger);
             ResultWindow *win = new ResultWindow(*vm, this);
             QMdiSubWindow *subWindow = ui->mdiArea->addSubWindow(win);
@@ -149,7 +149,10 @@ void MainWindow::onSaveBtnTriggered()
                                                             tr("Текстовые файлы (*.txt);;"));
 
             if (filePath.isEmpty())
+            {
+                this->viewModel.writeLog(Logger::Level::ERROR, "Ошибка: файл не выбран");
                 return;
+            }
 
             bool result = this->viewModel.save(data, filePath.toStdString());
 
