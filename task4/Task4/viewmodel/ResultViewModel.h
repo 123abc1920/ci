@@ -2,10 +2,9 @@
 
 #include "Finder.h"
 #include <memory>
-#include "Logger.h"
-#include "ILoggable.h"
 #include <vector>
 #include <string>
+#include "ILoggable.h"
 
 class ResultViewModel : public ILoggable
 {
@@ -14,9 +13,10 @@ private:
     std::vector<std::string> result;
 
 public:
-    ResultViewModel(std::shared_ptr<Finder> finder, Logger &logger);
-    ~ResultViewModel();
+    explicit ResultViewModel(std::shared_ptr<Finder> finder, Logger &logger);
+    ~ResultViewModel() override = default;
 
-    std::vector<std::string> find();
-    std::vector<std::string> getResult();
+    const std::vector<std::string> &find();
+
+    const std::vector<std::string> &getResult() const;
 };

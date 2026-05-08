@@ -5,19 +5,17 @@ ResultViewModel::ResultViewModel(std::shared_ptr<Finder> finder, Logger &logger)
 {
 }
 
-std::vector<std::string> ResultViewModel::find()
+const std::vector<std::string> &ResultViewModel::find()
 {
-    auto resultData = this->finder->find();
-    this->result = resultData;
+    if (finder)
+    {
+        result = finder->find();
+    }
 
-    return resultData;
+    return result;
 }
 
-std::vector<std::string> ResultViewModel::getResult()
+const std::vector<std::string> &ResultViewModel::getResult() const
 {
-    return this->result;
-}
-
-ResultViewModel::~ResultViewModel()
-{
+    return result;
 }
