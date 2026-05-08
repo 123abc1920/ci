@@ -16,6 +16,8 @@ private:
     bool notHasExcludes(const Student &s) const;
     bool hasIncludes(const Student &s) const;
 
+    bool match(const Student &s) const;
+
 public:
     explicit Finder(const Query &q, const InMemoryRepository &repo, Logger &logger);
     ~Finder() = default;

@@ -1,43 +1,46 @@
 #include "Finder.h"
+#include <algorithm>
+#include <iterator>
 
 Finder::Finder(const Query &q, const InMemoryRepository &repo, Logger &logger)
     : ILoggable(logger), query(q), repository(repo) {}
 
-bool Finder::notHasExcludes(const Student &s) const
+bool Finder::match(const Student &s) const
 {
-    for (const auto &subject : this->query.getExcludesSet())
-    {
-        if (s.isLearnSubject(subject))
-            return false;
-    }
-    return true;
-}
+    const auto &studentSubjects = s.getAllSubjects();
+    const auto &required = this->query.getIncludesSet();
+    const auto &excludes = this->query.getExcludesSet();
 
-bool Finder::hasIncludes(const Student &s) const
-{
-    for (const auto &subject : this->query.getIncludesSet())
-    {
-        if (!s.isLearnSubject(subject))
-            return false;
-    }
-    return notHasExcludes(s);
+    bool hasAllIncludes = std::includes(studentSubjects.begin(), studentSubjects.end(),
+                                        required.begin(), required.end());
+
+    if (!hasAllIncludes)
+        return false;
+
+    bool hasAnyExcludes = std::any_of(excludes.begin(), excludes.end(),
+                                      [&studentSubjects](const std::string &sub)
+                                      {
+                                          return studentSubjects.find(sub) != studentSubjects.end();
+                                      });
+
+    return !hasAnyExcludes;
 }
 
 std::vector<std::string> Finder::find() const
 {
     std::vector<std::string> results;
-    this->writeLog(Logger::Level::DEBUG, "Начат поиск в БД");
+    writeLog(Logger::Level::DEBUG, "Начат поиск в БД");
 
-    const auto &data = this->repository.getAll();
+    const auto &data = repository.getAll();
 
     for (const auto &[id, student] : data)
     {
-        if (hasIncludes(student))
+        if (match(student))
         {
-            results.push_back(student.getName() + " " + student.getSubjects());
+            results.push_back(student.getName() + ": " + student.getSubjects());
         }
     }
 
-    this->writeLog(Logger::Level::INFO, "Поиск завершен, найдено " + std::to_string(results.size()));
+    writeLog(Logger::Level::INFO, "Поиск завершен, найдено " + std::to_string(results.size()));
     return results;
 }

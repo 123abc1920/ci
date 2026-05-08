@@ -63,7 +63,11 @@
                </property>
                <layout class="QVBoxLayout" name="verticalLayout">
                 <item>
-                 <widget class="QListView" name="includeList"/>
+                 <widget class="QListView" name="includeList">
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::NoEditTriggers</set>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
@@ -100,7 +104,11 @@
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_4">
                 <item>
-                 <widget class="QListView" name="excludeList"/>
+                 <widget class="QListView" name="excludeList">
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::NoEditTriggers</set>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
