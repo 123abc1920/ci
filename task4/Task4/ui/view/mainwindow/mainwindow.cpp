@@ -15,6 +15,8 @@
 #include "resultwindow.h"
 #include <QMessageBox>
 #include "Logger.h"
+#include <stdexcept>
+#include <algorithm>
 
 MainWindow::MainWindow(MainViewModel &viewModel, Logger &logger, QWidget *parent)
     : QMainWindow(parent), ui(std::make_unique<Ui::MainWindow>()), viewModel(viewModel), logger(logger)
@@ -180,21 +182,52 @@ std::string MainWindow::openFile()
     if (fileName.isEmpty())
     {
         viewModel.writeLog(Logger::Level::WARNING, "Файл не выбран");
-        return {};
+        return "";
     }
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    try
     {
-        viewModel.writeLog(Logger::Level::ERROR, "Не удалось открыть файл: " + file.errorString().toStdString());
-        return {};
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            throw std::runtime_error("Системная ошибка открытия: " + file.errorString().toStdString());
+        }
+
+        QTextStream in(&file);
+        int lineCount = 0;
+        std::string finalContent;
+
+        while (!in.atEnd())
+        {
+            QString line = in.readLine();
+            lineCount++;
+
+            if (line.trimmed().isEmpty())
+                continue;
+
+            if (!line.contains("\t") && !line.contains("  "))
+            {
+                viewModel.writeLog(Logger::Level::WARNING, "Строка " + std::to_string(lineCount) + " пропущена: неверный формат");
+                continue;
+            }
+
+            finalContent += line.toStdString() + "\n";
+        }
+
+        if (finalContent.empty())
+        {
+            throw std::invalid_argument("Файл пуст или не содержит корректных данных");
+        }
+
+        viewModel.writeLog(Logger::Level::INFO, "Файл успешно загружен. Строк обработано: " + std::to_string(lineCount));
+        return finalContent;
     }
-
-    QTextStream in(&file);
-    QString content = in.readAll();
-
-    viewModel.writeLog(Logger::Level::DEBUG, "Файл прочитан: " + fileName.toStdString());
-    return content.toStdString();
+    catch (const std::exception &e)
+    {
+        viewModel.writeLog(Logger::Level::ERROR, "Ошибка при чтении файла: " + std::string(e.what()));
+        QMessageBox::critical(this, tr("Ошибка"), tr("Не удалось обработать файл"));
+        return "";
+    }
 }
 
 void MainWindow::updateMenuItems(QMdiSubWindow *activeWindow)
