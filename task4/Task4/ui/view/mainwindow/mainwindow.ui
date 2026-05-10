@@ -41,12 +41,6 @@
     </property>
     <addaction name="saveBtn"/>
    </widget>
-   <widget class="QMenu" name="help">
-    <property name="title">
-     <string>Помощь</string>
-    </property>
-    <addaction name="action_3"/>
-   </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
      <string>Фильтровать</string>
@@ -63,7 +57,6 @@
    <addaction name="menu"/>
    <addaction name="search"/>
    <addaction name="saveFile"/>
-   <addaction name="help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="openFile">
